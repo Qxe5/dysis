@@ -1,6 +1,8 @@
 '''Embed icons'''
 CDN = 'https://cdn.discordapp.com/attachments/'
 
+SKILLCHARACTER = '<:skillcharacter:939926808185417778>'
+
 attributes = {
     'DARK'   : f'{CDN}936463189237977139/938305598053826590/icon.png',
     'DIVINE' : f'{CDN}936463189237977139/938307705037275147/icon.png',
