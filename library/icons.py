@@ -42,7 +42,13 @@ subtypes = {
     'Warrior'       : '<:warrior:938561271865966643>',
     'Winged Beast'  : '<:wingedbeast:938561787215896586>',
     'Wyrm'          : '<:wyrm:938562276116545617>',
-    'Zombie'        : '<:zombie_:938562568480501781>'
+    'Zombie'        : '<:zombie_:938562568480501781>',
+    'Normal'        : '<:normal:938333369719218216>',
+    'Continuous'    : '<:continuous:938333796560957480>',
+    'Equip'         : '<:equip:938334072697139250>',
+    'Field'         : '<:field:938334926003142696>',
+    'Quick-Play'    : '<:quickplay:938334588638494720>',
+    'Ritual'        : '<:ritual:938335237702815805>'
 }
 
 level = {
