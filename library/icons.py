@@ -1,6 +1,7 @@
 '''Embed icons'''
 CDN = 'https://cdn.discordapp.com/attachments/'
 
+STATS = '<:stats:939935149183889428>'
 SKILLCHARACTER = '<:skillcharacter:939926808185417778>'
 
 attributes = {
