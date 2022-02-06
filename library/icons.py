@@ -17,6 +17,34 @@ magic = {
     'Skill Card' : f'{CDN}936463189237977139/938540845928415332/icon.png'
 }
 
+subtypes = {
+    'Aqua'          : '<:aqua:938356998783778837>',
+    'Beast'         : '<:beast:938362309418573844>',
+    'Beast-Warrior' : '<:beastwarrior:938362785530789928>',
+    'Creator-God'   : '<:creatorgod:938604431782608920>',
+    'Cyberse'       : '<:cyberse:938600500469850153>',
+    'Dinosaur'      : '<:dinosaur:938363993440002048>',
+    'Divine-Beast'  : '<:divinebeast:938364790206758932>',
+    'Dragon'        : '<:dragon_:938366199224496129>',
+    'Fairy'         : '<:fairy_:938552982876856421>',
+    'Fiend'         : '<:fiend:938553436381782058>',
+    'Fish'          : '<:fish_:938554279122309192>',
+    'Insect'        : '<:insect:938554611118260274>',
+    'Machine'       : '<:machine:938554997640151190>',
+    'Plant'         : '<:plant:938555600449728572>',
+    'Psychic'       : '<:psychic:938556842626392155>',
+    'Pyro'          : '<:pyro:938557282034262096>',
+    'Reptile'       : '<:reptile:938558192877731871>',
+    'Rock'          : '<:rock_:938559401969737738>',
+    'Sea Serpent'   : '<:seaserpent:938560361949433937>',
+    'Spellcaster'   : '<:spellcaster:938560761754710076>',
+    'Thunder'       : '<:thunder:938560996295974943>',
+    'Warrior'       : '<:warrior:938561271865966643>',
+    'Winged Beast'  : '<:wingedbeast:938561787215896586>',
+    'Wyrm'          : '<:wyrm:938562276116545617>',
+    'Zombie'        : '<:zombie_:938562568480501781>'
+}
+
 level = {
     'level'  : '<:level:938731649108172810>',
     'rank'   : '<:rank:938732149819973673>',
