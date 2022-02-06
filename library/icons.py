@@ -11,10 +11,17 @@ attributes = {
     'WIND'   : f'{CDN}936463189237977139/938307289419509790/icon.png'
 }
 
-spell_trap_skill = {
+magic = {
     'Spell Card' : f'{CDN}936463189237977139/938302447540125726/icon.png',
     'Trap Card'  : f'{CDN}936463189237977139/938302931315351592/icon.png',
     'Skill Card' : f'{CDN}936463189237977139/938540845928415332/icon.png'
+}
+
+level = {
+    'level'  : '<:level:938731649108172810>',
+    'rank'   : '<:rank:938732149819973673>',
+    'scale'  : '<:scale:939016782369407026>',
+    'rating' : '<:link_:939836156844072980>'
 }
 
 banlist = {
