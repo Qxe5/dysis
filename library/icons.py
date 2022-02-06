@@ -48,7 +48,8 @@ subtypes = {
     'Equip'         : '<:equip:938334072697139250>',
     'Field'         : '<:field:938334926003142696>',
     'Quick-Play'    : '<:quickplay:938334588638494720>',
-    'Ritual'        : '<:ritual:938335237702815805>'
+    'Ritual'        : '<:ritual:938335237702815805>',
+    'Counter'       : '<:counter:938341460091219968>'
 }
 
 level = {
