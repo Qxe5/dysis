@@ -31,5 +31,8 @@ types = {
     'Pendulum Flip Effect Monster'    : colours['green'],
     'Pendulum Tuner Effect Monster'   : colours['green'],
     'Fusion Monster'                  : colours['violet'],
-    'Pendulum Effect Fusion Monster'  : colours['violet']
+    'Pendulum Effect Fusion Monster'  : colours['violet'],
+    'Synchro Monster'                 : colours['white'],
+    'Synchro Tuner Monster'           : colours['white'],
+    'Synchro Pendulum Effect Monster' : colours['white']
 }
