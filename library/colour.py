@@ -11,3 +11,11 @@ colours = {
         'white'      : 0xcccccc,
         'yellow'     : 0xfde68a
 }
+
+types = {
+    'Normal Monster'                  : colours['yellow'],
+    'Normal Tuner Monster'            : colours['yellow'],
+    'Effect Monster'                  : colours['orange'],
+    'Flip Effect Monster'             : colours['orange'],
+    'Flip Tuner Effect Monster'       : colours['orange']
+}
