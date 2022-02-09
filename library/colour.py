@@ -22,5 +22,7 @@ types = {
     'Gemini Monster'                  : colours['orange'],
     'Spirit Monster'                  : colours['orange'],
     'Toon Monster'                    : colours['orange'],
-    'Union Effect Monster'            : colours['orange']
+    'Union Effect Monster'            : colours['orange'],
+    'Ritual Monster'                  : colours['light blue'],
+    'Ritual Effect Monster'           : colours['light blue']
 }
