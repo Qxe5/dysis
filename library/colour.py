@@ -17,5 +17,10 @@ types = {
     'Normal Tuner Monster'            : colours['yellow'],
     'Effect Monster'                  : colours['orange'],
     'Flip Effect Monster'             : colours['orange'],
-    'Flip Tuner Effect Monster'       : colours['orange']
+    'Flip Tuner Effect Monster'       : colours['orange'],
+    'Tuner Monster'                   : colours['orange'],
+    'Gemini Monster'                  : colours['orange'],
+    'Spirit Monster'                  : colours['orange'],
+    'Toon Monster'                    : colours['orange'],
+    'Union Effect Monster'            : colours['orange']
 }
