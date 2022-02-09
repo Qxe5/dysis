@@ -24,5 +24,9 @@ types = {
     'Toon Monster'                    : colours['orange'],
     'Union Effect Monster'            : colours['orange'],
     'Ritual Monster'                  : colours['light blue'],
-    'Ritual Effect Monster'           : colours['light blue']
+    'Ritual Effect Monster'           : colours['light blue'],
+    'Pendulum Normal Monster'         : colours['green'],
+    'Pendulum Effect Monster'         : colours['green'],
+    'Pendulum Flip Effect Monster'    : colours['green'],
+    'Pendulum Tuner Effect Monster'   : colours['green']
 }
