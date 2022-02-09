@@ -36,5 +36,10 @@ types = {
     'Synchro Tuner Monster'           : colours['white'],
     'Synchro Pendulum Effect Monster' : colours['white'],
     'XYZ Monster'                     : colours['black'],
-    'XYZ Pendulum Effect Monster'     : colours['black']
+    'XYZ Pendulum Effect Monster'     : colours['black'],
+    'Link Monster'                    : colours['dark blue'],
+    'Token'                           : colours['gray'],
+    'Spell Card'                      : colours['green'],
+    'Trap Card'                       : colours['purple'],
+    'Skill Card'                      : colours['dark blue']
 }
