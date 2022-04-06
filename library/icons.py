@@ -4,6 +4,7 @@ CDN = 'https://cdn.discordapp.com/attachments/'
 VOID = '<:void:960877582562250802>'
 STATS = '<:stats:939935149183889428>'
 SKILLCHARACTER = '<:skillcharacter:939926808185417778>'
+LOGO = f'{CDN}936463189237977139/961204178552754196/icon.png'
 
 attributes = {
     'DARK'   : f'{CDN}936463189237977139/938305598053826590/icon.png',
