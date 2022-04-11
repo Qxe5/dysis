@@ -30,12 +30,12 @@ async def updatecards():
 updatecards.start()
 
 # commands
-@bot.slash_command(name='cg')
+@bot.slash_command()
 async def search(
     ctx,
     card : discord.Option(str, 'Card name:', autocomplete=autocomplete)
 ):
-    '''Search for a TCG/OCG card'''
+    '''Search for a TCG/OCG/Skill card'''
     if results := await lookup(card):
         paginator = pages.Paginator(results)
         await paginator.respond(ctx.interaction)
