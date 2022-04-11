@@ -7,6 +7,7 @@ import sys
 import discord
 from discord.ext import tasks, pages
 
+from cogs.status import Status
 from library import cards
 from library.search import autocomplete, lookup
 
@@ -46,6 +47,9 @@ async def search(
 async def servers(ctx):
     '''Get the server count of the bot'''
     await ctx.respond(f'{len(bot.guilds)} Servers', ephemeral=True)
+
+# cogs
+bot.add_cog(Status(bot))
 
 # authenticate
 try:
