@@ -14,4 +14,4 @@ async def autocomplete(ctx):
 async def lookup(term):
     '''Lookup a search term in the lookup table and return the closest matches or None'''
     if matches := await fuzzy(term.lower(), cards.keys()):
-        return tuple(cards[match] for match in matches)
+        return [cards[match] for match in matches]
