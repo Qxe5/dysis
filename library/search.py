@@ -9,7 +9,9 @@ async def fuzzy(comparate, comparables, results=25):
 
 async def autocomplete(ctx):
     '''Return autocompletions from a current search term'''
-    return await fuzzy(ctx.options['card'], cards.keys())
+    term = ctx.options['card']
+
+    return await fuzzy(term, [card for card in cards if card.startswith(term[0])]) if term else []
 
 async def lookup(term):
     '''Lookup a search term in the lookup table and return the closest matches or None'''
