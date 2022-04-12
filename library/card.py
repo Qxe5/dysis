@@ -143,9 +143,9 @@ class Card: # pylint: disable=too-many-instance-attributes
     async def formatlimits(self):
         '''Format and return the limits as a string'''
         with StringIO() as limits:
-            if self.releases.tcg:
+            if self.limits.tcg:
                 limits.write(f'**TCG:** {self.limits.tcg} {icons.banlist[self.limits.tcg]}\n')
-            if self.releases.ocg:
+            if self.limits.ocg:
                 limits.write(f'**OCG:** {self.limits.ocg} {icons.banlist[self.limits.ocg]}')
 
             return limits.getvalue().rstrip('\n')
