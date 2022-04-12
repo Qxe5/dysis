@@ -153,9 +153,9 @@ class Card: # pylint: disable=too-many-instance-attributes
     async def formatreleases(self):
         '''Format and return the release dates as a string'''
         with StringIO() as releases:
-            if self.releases.tcg:
+            if self.limits.tcg:
                 releases.write(f'**TCG:** {self.releases.tcg}\n')
-            if self.releases.ocg:
+            if self.limits.ocg:
                 releases.write(f'**OCG:** {self.releases.ocg}')
 
             return releases.getvalue().rstrip('\n')
