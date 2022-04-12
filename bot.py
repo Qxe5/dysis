@@ -5,7 +5,7 @@ from signal import signal, SIGINT
 import sys
 
 import discord
-from discord.ext import tasks, commands, pages
+from discord.ext import tasks, pages
 
 from cogs.status import Status
 from library import cards
@@ -31,9 +31,7 @@ async def updatecards():
 updatecards.start()
 
 # commands
-@bot.slash_command(
-    cooldown=commands.CooldownMapping(commands.Cooldown(1, 1), commands.BucketType.default)
-)
+@bot.slash_command()
 async def search(
     ctx,
     card : discord.Option(str, 'Card name:', autocomplete=autocomplete),
@@ -45,14 +43,6 @@ async def search(
         await paginator.respond(ctx.interaction, ephemeral=not public)
     else:
         await ctx.respond(f'No cards found for search `{card}`', ephemeral=True)
-
-@search.error
-async def search_error(ctx, error):
-    '''Handle a cooldown error'''
-    if isinstance(error, commands.CommandOnCooldown):
-        await ctx.respond(str(error).replace('You are', 'I am'), ephemeral=True)
-    else:
-        raise error
 
 @bot.slash_command()
 async def servers(ctx):
