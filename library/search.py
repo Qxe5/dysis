@@ -9,7 +9,7 @@ async def fuzzy(comparate, comparables, results=25):
 
 async def autocomplete(ctx):
     '''Return autocompletions from a current search term'''
-    term = ctx.options['card']
+    term = ctx.options['card'].lower()
 
     return await fuzzy(term, [card for card in cards if card.startswith(term[0]) or term in card]) \
            if term else []
