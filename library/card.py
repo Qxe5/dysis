@@ -8,6 +8,12 @@ from library import colours
 from library import icons
 from library.elements import Levels, Stats, Limits, Releases, Prices, Pendulum
 
+def extract_koid(card):
+    '''Extract and return the KOID or None from the card JSON'''
+    misc = card['misc_info'][0]
+
+    return misc['konami_id'] if 'konami_id' in misc else None
+
 def extract_stats(card):
     '''Extract and return the stats from the card JSON'''
     stats = []
@@ -49,6 +55,7 @@ class Card: # pylint: disable=too-many-instance-attributes
     def __init__(self, card):
         self.name = card['name']
         self.ids = tuple(sorted(image['id'] for image in card['card_images']))
+        self.koid = extract_koid(card)
 
         self.type = card['type']
         self.subtype = card['race']
@@ -221,6 +228,8 @@ class Card: # pylint: disable=too-many-instance-attributes
         if self.rarities:
             embed.add_field(name='Rarity', value=', '.join(self.rarities))
 
-        embed.set_footer(icon_url=icons.LOGO, text=' • '.join(str(cid) for cid in self.ids))
+        embed.set_footer(icon_url=icons.LOGO,
+                         text=' • '.join(str(cid) for cid in self.ids + (self.koid,))
+        )
 
         return embed
