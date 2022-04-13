@@ -27,4 +27,4 @@ async def generatecards():
 
         for card_datum in card_data:
             card = Card(card_datum)
-            cards[card.name.lower()] = await card.make_embed()
+            cards[card.name.lower()] = card
