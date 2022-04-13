@@ -39,7 +39,7 @@ async def search(
 ):
     '''Search for a TCG/OCG/Skill card'''
     if results := await lookup(card):
-        paginator = pages.Paginator(results)
+        paginator = pages.Paginator(results, timeout=0)
         await paginator.respond(ctx.interaction, ephemeral=not public)
     else:
         await ctx.respond(f'No cards found for search `{card}`', ephemeral=True)
