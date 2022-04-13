@@ -35,7 +35,7 @@ updatecards.start()
 async def search(
     ctx,
     card : discord.Option(str, 'Card name:', autocomplete=autocomplete),
-    public : discord.Option(bool, 'Should the results be visible to everyone?', default=False)
+    public : discord.Option(bool, 'Should the results be visible to everyone?')
 ):
     '''Search for a TCG/OCG/Skill card'''
     if results := await lookup(card):
