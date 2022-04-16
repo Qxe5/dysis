@@ -12,12 +12,11 @@ async def retrieve_card_data():
     api = ('https://db.ygoprodeck.com/api/v7/cardinfo.php?'
            'misc=yes')
 
-    async with aiohttp.ClientSession() as client:
+    async with aiohttp.ClientSession(raise_for_status=True) as client:
         try:
             async with client.get(api) as response:
-                if response.ok:
-                    return (await response.json())['data']
-        except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
+                return (await response.json())['data']
+        except (aiohttp.ClientConnectionError, aiohttp.ClientResponseError, asyncio.TimeoutError):
             return None
 
 async def generatecards():
