@@ -39,7 +39,7 @@ async def search(
     card : cardoption,
     public : discord.Option(bool, 'Should the results be visible to everyone?')
 ):
-    '''Search for a TCG/OCG/Skill card'''
+    '''Search for TCG/OCG/Skill cards'''
     if results := await lookup(card):
         paginator = pages.Paginator([await result.make_embed() for result in results], timeout=0)
         await paginator.respond(ctx.interaction, ephemeral=not public)
