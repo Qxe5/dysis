@@ -32,12 +32,13 @@ updatecards.start()
 
 # commands
 cardoption = discord.Option(str, 'Card name:', autocomplete=autocomplete)
+publicoption = discord.Option(bool, 'Should the results be visible to everyone?', default=True)
 
 @bot.slash_command()
 async def search(
     ctx,
     card : cardoption,
-    public : discord.Option(bool, 'Should the results be visible to everyone?')
+    public : publicoption
 ):
     '''Search for TCG/OCG/Skill cards'''
     if results := await lookup(card):
@@ -50,7 +51,8 @@ async def search(
 async def rulings(
     ctx,
     card : cardoption,
-    index : discord.Option(int, name='qa', description='YGOrg Q&A ID:', default=0)
+    index : discord.Option(int, name='qa', description='YGOrg Q&A ID:', default=0),
+    public : publicoption
 ):
     '''Search for rulings'''
     if result := await lookup(card, results=1):
@@ -59,9 +61,9 @@ async def rulings(
 
         if results := await result.getrulings(index):
             paginator = pages.Paginator(results, timeout=0)
-            await paginator.respond(ctx.interaction)
+            await paginator.respond(ctx.interaction, ephemeral=not public)
         else:
-            await ctx.respond(f'`{result.name}` has no current rulings')
+            await ctx.respond(f'`{result.name}` has no current rulings', ephemeral=not public)
     else:
         await ctx.respond(f'No card found for search `{card}`', ephemeral=True)
 
