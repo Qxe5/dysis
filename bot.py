@@ -57,7 +57,7 @@ async def rulings(
     '''Search for rulings'''
     if result := await lookup(card, results=1):
         result = result.pop()
-        await ctx.defer()
+        await ctx.defer(ephemeral=not public)
 
         if results := await result.getrulings(index):
             paginator = pages.Paginator(results, timeout=0)
