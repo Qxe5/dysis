@@ -1,18 +1,26 @@
 '''JSON to Object mapping'''
+import asyncio
+from contextlib import suppress
 from io import StringIO
+from json import dumps, load
+from os import remove
+from os.path import exists
 from urllib.parse import quote
 
-from discord import Embed
+import aiohttp
+from discord import Embed, Colour
 
 from library import colours
 from library import icons
 from library.elements import Levels, Stats, Limits, Releases, Prices, Pendulum
 
-def extract_koid(card):
-    '''Extract and return the KOID or None from the card JSON'''
-    misc = card['misc_info'][0]
+YGORGAPI = 'https://db.ygorganization.com/'
 
-    return misc['konami_id'] if 'konami_id' in misc else None
+koids = {}
+
+def getkoid(card):
+    '''Get and return the KOID or None for the card'''
+    return koids[card] if card in koids else None
 
 def extract_stats(card):
     '''Extract and return the stats from the card JSON'''
@@ -50,12 +58,72 @@ def extract_prices(card):
 
     return Prices(float(prices['cardmarket_price']), float(prices['tcgplayer_price']))
 
+async def fetchruling(client, rid):
+    '''Request and cache a ruling'''
+    with suppress(aiohttp.ClientConnectionError, aiohttp.ClientResponseError, asyncio.TimeoutError):
+        async with client.get(f'{YGORGAPI}data/qa/{rid}') as response:
+            rev = 'cache/revision'
+
+            if not exists(rev):
+                with open(rev, 'w', encoding='utf-8') as revisionfile:
+                    revisionfile.write('0')
+
+            with open(rev, encoding='utf-8') as revisionfile:
+                revision = revisionfile.read()
+
+            if revision < response.headers['x-cache-revision']:
+                async with client.get(f'{YGORGAPI}manifest/{revision}') as response:
+                    with suppress(KeyError, FileNotFoundError):
+                        for removable in (await response.json())['data']['qa']:
+                            remove(removable)
+
+                    with open(rev, 'w', encoding='utf-8') as revisionfile:
+                        revisionfile.write(response.headers['x-cache-revision'])
+
+            with open(f'cache/{rid}', 'w', encoding='utf-8') as cache:
+                cache.write(dumps(await response.json()))
+
+class Ruling:
+    '''A representation of a ruling'''
+    def __init__(self, ruling):
+        '''Initialise a ruling from JSON'''
+        self.koids = ruling['cards']
+        ruling = ruling['qaData']['en']
+        self.rid = ruling['id']
+        self.question = self.replacekoids(ruling['question'])
+        self.answer = self.replacekoids(ruling['answer'])
+        self.date = ruling['thisSrc']['date']
+
+    def replacekoids(self, text):
+        '''Replace all KOIDs in the ruling text with card names and return the transformation'''
+        for koid in self.koids:
+            text = text.replace(f'<<{koid}>>', koids[koid])
+
+        return text
+
+    async def make_embed(self):
+        '''Make and return an embed of the ruling'''
+        embed = Embed(
+            colour=Colour.purple(),
+            description=f'**{self.question}**\n\n>>> {self.answer}'
+        )
+        embed.set_author(
+            icon_url=icons.QUESTION,
+            name='Ruling',
+            url=f'{YGORGAPI}qa#{self.rid}'
+        )
+        embed.set_thumbnail(url=icons.RULING)
+        embed.add_field(name='Involving', value=', '.join(koids[koid] for koid in self.koids))
+        embed.set_footer(icon_url=icons.LOGO, text=f'{self.rid} • {self.date}')
+
+        return embed
+
 class Card: # pylint: disable=too-many-instance-attributes
     '''Representation of a card'''
     def __init__(self, card):
         self.name = card['name']
         self.ids = tuple(sorted(image['id'] for image in card['card_images']))
-        self.koid = extract_koid(card)
+        self.koid = getkoid(self.name)
 
         self.type = card['type']
         self.subtype = card['race']
@@ -77,6 +145,7 @@ class Card: # pylint: disable=too-many-instance-attributes
         self.releases = extract_releases(card)
         self.rarities = extract_rarities(card)
         self.prices = extract_prices(card)
+        self.rulings = []
 
     def extract_text(self, text):
         '''Extract and return the card text from the card text JSON'''
@@ -180,6 +249,12 @@ class Card: # pylint: disable=too-many-instance-attributes
 
             return prices.getvalue().rstrip('\n')
 
+    async def formatids(self):
+        '''Format and return the card IDs'''
+        return ' • '.join(
+            [str(cid).zfill(8) for cid in self.ids] + [str(self.koid)] if self.koid else []
+        )
+
     async def make_title(self, subicon):
         '''Make and return the title section of the embed given the subtype icon'''
         with StringIO() as title:
@@ -208,7 +283,7 @@ class Card: # pylint: disable=too-many-instance-attributes
     async def make_embed(self):
         '''Make and return the embed'''
         colour = colours.types[self.type]
-        url = f'https://yugipedia.com/wiki/{quote(self.name)}'
+        url = f'{YGORGAPI}card#{self.koid}' if self.koid else Embed.Empty
         image = f'https://storage.googleapis.com/ygoprodeck.com/pics_artgame/{min(self.ids)}.jpg'
         subicon = icons.subtypes[self.subtype] if self.subtype in icons.subtypes \
                                                                else icons.SKILLCHARACTER
@@ -228,8 +303,36 @@ class Card: # pylint: disable=too-many-instance-attributes
         if self.rarities:
             embed.add_field(name='Rarity', value=', '.join(self.rarities))
 
-        embed.set_footer(icon_url=icons.LOGO,
-                         text=' • '.join(str(cid) for cid in self.ids + (self.koid,))
-        )
+        embed.set_footer(icon_url=icons.LOGO, text=await self.formatids())
 
         return embed
+
+    async def setrulings(self):
+        '''Set the rulings'''
+        async with aiohttp.ClientSession(raise_for_status=True) as client:
+            with suppress(
+                aiohttp.ClientConnectionError, aiohttp.ClientResponseError, asyncio.TimeoutError
+            ):
+                async with client.get(f'{YGORGAPI}data/card/{self.koid}') as response:
+                    for rid in (await response.json())['qaIndex']:
+                        entry = f'cache/{rid}'
+
+                        if not exists(entry):
+                            await fetchruling(client, rid)
+
+                        with open(entry, encoding='utf-8') as cache:
+                            ruling = load(cache)
+
+                            with suppress(KeyError):
+                                if 'en' in ruling['qaData']:
+                                    self.rulings.append(Ruling(ruling))
+
+    async def getrulings(self, index):
+        '''Retrieve and return the rulings sorted by index'''
+        if not self.rulings:
+            await self.setrulings()
+
+        return [
+            await ruling.make_embed()
+            for ruling in sorted(self.rulings, key=lambda ruling : abs(ruling.rid - index))
+        ]
