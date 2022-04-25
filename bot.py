@@ -5,10 +5,11 @@ from signal import signal, SIGINT
 import sys
 
 import discord
-from discord.ext import tasks, pages
+from discord.ext import tasks
 
 from cogs.status import Status
 from library import cards
+from library.pagination import Paginator
 from library.search import autocomplete, lookup
 
 signal(SIGINT, lambda signalnumber, stackframe: sys.exit())
@@ -42,7 +43,7 @@ async def search(
 ):
     '''Search for TCG/OCG/Skill cards'''
     if results := await lookup(card):
-        paginator = pages.Paginator([await result.make_embed() for result in results], timeout=0)
+        paginator = Paginator([await result.make_embed() for result in results])
         await paginator.respond(ctx.interaction, ephemeral=not public)
     else:
         await ctx.respond(f'No cards found for search `{card}`', ephemeral=True)
@@ -60,7 +61,7 @@ async def rulings(
         await ctx.defer(ephemeral=not public)
 
         if results := await result.getrulings(index):
-            paginator = pages.Paginator(results, timeout=0)
+            paginator = Paginator(results)
             await paginator.respond(ctx.interaction, ephemeral=not public)
         else:
             await ctx.respond(f'`{result.name}` has no current rulings', ephemeral=not public)
