@@ -10,8 +10,7 @@ from urllib.parse import quote
 import aiohttp
 from discord import Embed, Colour
 
-from library import colours
-from library import icons
+from library import colours, icons
 from library.elements import Levels, Stats, Limits, Releases, Prices, Pendulum
 
 YGORGAPI = 'https://db.ygorganization.com/'
