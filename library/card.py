@@ -326,12 +326,18 @@ class Card: # pylint: disable=too-many-instance-attributes
                                 if 'en' in ruling['qaData']:
                                     self.rulings.append(Ruling(ruling))
 
-    async def getrulings(self, index):
-        '''Retrieve and return the rulings sorted by index'''
+    async def getrulings(self, keywords, index):
+        '''Retrieve and return the rulings sorted by keyword matches or index'''
         if not self.rulings:
             await self.setrulings()
 
         return [
             await ruling.make_embed()
-            for ruling in sorted(self.rulings, key=lambda ruling : abs(ruling.rid - index))
+            for ruling in sorted(self.rulings,
+                key=lambda ruling : sum(
+                    keyword.lower() in tuple(word.lower() for word in ruling.question.split(' '))
+                    for keyword in keywords.split(' ')
+                ) if keywords else abs(ruling.rid - index),
+                reverse=bool(keywords)
+            )
         ]

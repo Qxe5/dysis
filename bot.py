@@ -52,6 +52,7 @@ async def search(
 async def rulings(
     ctx,
     card : cardoption,
+    question : discord.Option(str, 'Keywords:', default=''),
     index : discord.Option(int, name='qa', description='YGOrg Q&A ID:', default=0),
     public : publicoption
 ):
@@ -60,7 +61,7 @@ async def rulings(
         result = result.pop()
         await ctx.defer(ephemeral=not public)
 
-        if results := await result.getrulings(index):
+        if results := await result.getrulings(question, index):
             paginator = Paginator(results)
             await paginator.respond(ctx.interaction, ephemeral=not public)
         else:
