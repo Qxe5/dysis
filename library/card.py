@@ -71,13 +71,13 @@ async def fetchruling(client, rid):
                 revision = revisionfile.read()
 
             if revision < response.headers['x-cache-revision']:
-                async with client.get(f'{YGORGAPI}manifest/{revision}') as response:
+                async with client.get(f'{YGORGAPI}manifest/{revision}') as rev_response:
                     with suppress(KeyError, FileNotFoundError):
-                        for removable in (await response.json())['data']['qa']:
+                        for removable in (await rev_response.json())['data']['qa']:
                             remove(removable)
 
                     with open(rev, 'w', encoding='utf-8') as revisionfile:
-                        revisionfile.write(response.headers['x-cache-revision'])
+                        revisionfile.write(rev_response.headers['x-cache-revision'])
 
             with open(f'cache/{rid}', 'w', encoding='utf-8') as cache:
                 cache.write(dumps(await response.json()))
