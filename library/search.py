@@ -15,7 +15,7 @@ async def autocomplete(ctx):
 
     return await fuzzy(term, [
             card for card in cards
-            if card.startswith(term[0]) or any(word in card for word in term.split(' '))
+            if card.startswith(term[0]) or term in card
         ]
     ) if term else []
 
