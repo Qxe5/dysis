@@ -57,30 +57,28 @@ def extract_prices(card):
 
     return Prices(float(prices['cardmarket_price']), float(prices['tcgplayer_price']))
 
-async def fetchruling(client, rid):
-    '''Request and cache a ruling'''
-    with suppress(aiohttp.ClientConnectionError, aiohttp.ClientResponseError, asyncio.TimeoutError):
-        async with client.get(f'{YGORGAPI}data/qa/{rid}') as response:
-            rev = 'cache/revision'
+async def read(path):
+    '''Read and return the contents of the file at the path'''
+    with open(path, encoding='utf-8') as reader:
+        return reader.read()
 
-            if not exists(rev):
-                with open(rev, 'w', encoding='utf-8') as revisionfile:
-                    revisionfile.write('0')
+async def write(path, content):
+    '''Write the content to the file at the path'''
+    with open(path, 'w', encoding='utf-8') as writer:
+        writer.write(content)
 
-            with open(rev, encoding='utf-8') as revisionfile:
-                revision = revisionfile.read()
+async def clean(client, revision):
+    '''Clean the cache of outdated entries from the HTTP client and current revision'''
+    async with client.get(f'{YGORGAPI}manifest/{revision}') as response:
+        with suppress(KeyError, FileNotFoundError):
+            for removable in (await response.json())['data']['qa']:
+                remove(f'cache/{removable}')
 
-            if revision < response.headers['x-cache-revision']:
-                async with client.get(f'{YGORGAPI}manifest/{revision}') as response:
-                    with suppress(KeyError, FileNotFoundError):
-                        for removable in (await response.json())['data']['qa']:
-                            remove(removable)
-
-                    with open(rev, 'w', encoding='utf-8') as revisionfile:
-                        revisionfile.write(response.headers['x-cache-revision'])
-
-            with open(f'cache/{rid}', 'w', encoding='utf-8') as cache:
-                cache.write(dumps(await response.json()))
+async def cache(client, rid):
+    '''Request and cache a ruling from its ID via the HTTP client'''
+    async with client.get(f'{YGORGAPI}data/qa/{rid}') as response:
+        with open(f'cache/{rid}', 'w', encoding='utf-8') as entry:
+            entry.write(dumps(await response.json()))
 
 class Ruling:
     '''A representation of a ruling'''
@@ -306,25 +304,37 @@ class Card: # pylint: disable=too-many-instance-attributes
 
         return embed
 
+    async def loadruling(self, rid):
+        '''Load a ruling via its ID from the cache into a list'''
+        ruling = load(read(f'cache/{rid}'))
+
+        if 'en' in ruling['qaData']:
+            self.rulings.append(Ruling(ruling))
+
     async def setrulings(self):
-        '''Set the rulings'''
+        '''Request and set the rulings'''
         async with aiohttp.ClientSession(raise_for_status=True) as client:
             with suppress(
                 aiohttp.ClientConnectionError, aiohttp.ClientResponseError, asyncio.TimeoutError
             ):
                 async with client.get(f'{YGORGAPI}data/card/{self.koid}') as response:
+                    rev = 'cache/revision'
+
+                    if not exists(rev):
+                        await write(rev, '0')
+
+                    revision = await read(rev)
+                    newrevision = response.headers['x-cache-revision']
+
+                    if revision < newrevision:
+                        await clean(client, revision)
+                        await write(rev, newrevision)
+
                     for rid in (await response.json())['qaIndex']:
-                        entry = f'cache/{rid}'
+                        if not exists(f'cache/{rid}'):
+                            await cache(client, rid)
 
-                        if not exists(entry):
-                            await fetchruling(client, rid)
-
-                        with open(entry, encoding='utf-8') as cache:
-                            ruling = load(cache)
-
-                            with suppress(KeyError):
-                                if 'en' in ruling['qaData']:
-                                    self.rulings.append(Ruling(ruling))
+                        await self.loadruling(rid)
 
     async def getrulings(self, keywords, index):
         '''Retrieve and return the rulings sorted by keyword matches or index'''
