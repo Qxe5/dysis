@@ -11,11 +11,9 @@ import aiohttp
 from discord import Embed, Colour
 
 from library import colours, icons
+from library.api import YGORG
+from library.collection import koids
 from library.elements import Levels, Stats, Limits, Releases, Prices, Pendulum
-
-YGORGAPI = 'https://db.ygorganization.com/'
-
-koids = {}
 
 def getkoid(card):
     '''Get and return the KOID or None for the card'''
@@ -69,14 +67,14 @@ async def write(path, content):
 
 async def clean(client, revision):
     '''Clean the cache of outdated entries from the HTTP client and current revision'''
-    async with client.get(f'{YGORGAPI}manifest/{revision}') as response:
+    async with client.get(f'{YGORG}manifest/{revision}') as response:
         with suppress(KeyError, FileNotFoundError):
             for removable in (await response.json())['data']['qa']:
                 remove(f'cache/{removable}')
 
 async def cache(client, rid):
     '''Request and cache a ruling from its ID via the HTTP client'''
-    async with client.get(f'{YGORGAPI}data/qa/{rid}') as response:
+    async with client.get(f'{YGORG}data/qa/{rid}') as response:
         with open(f'cache/{rid}', 'w', encoding='utf-8') as entry:
             entry.write(dumps(await response.json()))
 
@@ -107,7 +105,7 @@ class Ruling:
         embed.set_author(
             icon_url=icons.QUESTION,
             name='Ruling',
-            url=f'{YGORGAPI}qa#{self.rid}'
+            url=f'{YGORG}qa#{self.rid}'
         )
         embed.set_thumbnail(url=icons.RULING)
         embed.add_field(name='Involving', value=', '.join(koids[koid] for koid in self.koids))
@@ -280,7 +278,7 @@ class Card: # pylint: disable=too-many-instance-attributes
     async def make_embed(self):
         '''Make and return the embed'''
         colour = colours.types[self.type]
-        url = f'{YGORGAPI}card#{self.koid}' if self.koid else Embed.Empty
+        url = f'{YGORG}card#{self.koid}' if self.koid else Embed.Empty
         image = f'https://storage.googleapis.com/ygoprodeck.com/pics_artgame/{min(self.ids)}.jpg'
         subicon = icons.subtypes[self.subtype] if self.subtype in icons.subtypes \
                                                                else icons.SKILLCHARACTER
@@ -317,7 +315,7 @@ class Card: # pylint: disable=too-many-instance-attributes
             with suppress(
                 aiohttp.ClientConnectionError, aiohttp.ClientResponseError, asyncio.TimeoutError
             ):
-                async with client.get(f'{YGORGAPI}data/card/{self.koid}') as response:
+                async with client.get(f'{YGORG}data/card/{self.koid}') as response:
                     rev = 'cache/revision'
 
                     if not exists(rev):
