@@ -12,12 +12,13 @@ from discord import Embed, Colour
 
 from library import colours, icons
 from library.api import YGORG
-from library.collection import koids, cards
+from library.collection import cards, koids
 from library.elements import Levels, Stats, Limits, Releases, Prices, Pendulum
 
-def getkoid(card):
-    '''Get and return the KOID or None for the card'''
-    return koids[card] if card in koids else None
+def extract_koid(card):
+    '''Extract and return the KOID or None from the card JSON'''
+    misc = card['misc_info'][0]
+    return misc['konami_id'] if 'konami_id' in misc else None
 
 def extract_stats(card):
     '''Extract and return the stats from the card JSON'''
@@ -121,7 +122,7 @@ class Card: # pylint: disable=too-many-instance-attributes
     def __init__(self, card):
         self.name = card['name']
         self.ids = tuple(sorted(image['id'] for image in card['card_images']))
-        self.koid = getkoid(self.name)
+        self.koid = extract_koid(card)
 
         self.type = card['type']
         self.subtype = card['race']
