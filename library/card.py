@@ -12,7 +12,7 @@ from discord import Embed, Colour
 
 from library import colours, icons
 from library.api import YGORG
-from library.collection import koids
+from library.collection import koids, cards
 from library.elements import Levels, Stats, Limits, Releases, Prices, Pendulum
 
 def getkoid(card):
@@ -67,6 +67,9 @@ async def write(path, content):
 
 async def clean(client, revision):
     '''Clean the cache of outdated entries from the HTTP client and current revision'''
+    for card in cards.values():
+        card.rulings.clear()
+
     async with client.get(f'{YGORG}manifest/{revision}') as response:
         with suppress(KeyError, FileNotFoundError):
             for removable in (await response.json())['data']['qa']:
