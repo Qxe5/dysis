@@ -1,0 +1,3 @@
+'''Card collection'''
+koids = {}
+cards = {}
