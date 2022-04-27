@@ -5,7 +5,7 @@ import aiohttp
 
 from library.api import YGOPRO
 from library.card import Card
-from library.collection import koids, cards
+from library.collection import cards, koids
 
 async def retrieve_card_data():
     '''Retrieve and return raw card data or None on error'''
