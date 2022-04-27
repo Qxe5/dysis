@@ -306,7 +306,7 @@ class Card: # pylint: disable=too-many-instance-attributes
 
     async def loadruling(self, rid):
         '''Load a ruling via its ID from the cache into a list'''
-        ruling = load(read(f'cache/{rid}'))
+        ruling = load(await read(f'cache/{rid}'))
 
         if 'en' in ruling['qaData']:
             self.rulings.append(Ruling(ruling))
