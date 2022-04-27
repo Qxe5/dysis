@@ -1,3 +1,3 @@
 '''Card collection'''
-koids = {}
 cards = {}
+koids = {}
