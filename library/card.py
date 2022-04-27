@@ -2,7 +2,7 @@
 import asyncio
 from contextlib import suppress
 from io import StringIO
-from json import dumps, load
+from json import dumps, loads
 from os import remove
 from os.path import exists
 from urllib.parse import quote
@@ -306,7 +306,7 @@ class Card: # pylint: disable=too-many-instance-attributes
 
     async def loadruling(self, rid):
         '''Load a ruling via its ID from the cache into a list'''
-        ruling = load(await read(f'cache/{rid}'))
+        ruling = loads(await read(f'cache/{rid}'))
 
         if 'en' in ruling['qaData']:
             self.rulings.append(Ruling(ruling))
