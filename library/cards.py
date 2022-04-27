@@ -3,14 +3,14 @@ import asyncio
 
 import aiohttp
 
-from library.card import YGORGAPI, koids, Card
-
-cards = {}
+from library.api import YGORG, YGOPRO
+from library.card import Card
+from library.collection import koids, cards
 
 async def retrieve_card_data():
     '''Retrieve and return raw card data or None on error'''
-    ygorg = f'{YGORGAPI}data/idx/card/name/en'
-    ygopro = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?misc=yes'
+    ygorg = f'{YGORG}data/idx/card/name/en'
+    ygopro = f'{YGOPRO}cardinfo.php?misc=yes'
 
     async with aiohttp.ClientSession(raise_for_status=True) as client:
         try:
