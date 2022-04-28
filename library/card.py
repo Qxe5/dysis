@@ -5,6 +5,7 @@ from io import StringIO
 from json import dumps, loads
 from os import remove
 from os.path import exists
+from re import findall
 from urllib.parse import quote
 
 import aiohttp
@@ -86,17 +87,17 @@ class Ruling:
     '''A representation of a ruling'''
     def __init__(self, ruling):
         '''Initialise a ruling from JSON'''
-        self.koids = ruling['cards']
-        ruling = ruling['qaData']['en']
         self.rid = ruling['id']
+        self.koids = []
         self.question = self.replacekoids(ruling['question'])
         self.answer = self.replacekoids(ruling['answer'])
         self.date = ruling['thisSrc']['date']
 
     def replacekoids(self, text):
         '''Replace all KOIDs in the ruling text with card names and return the transformation'''
-        for koid in self.koids:
-            text = text.replace(f'<<{koid}>>', koids[koid])
+        for replaceable in findall('<<[0-9]*>>', text):
+            self.koids.append(int(replaceable[2 : -2]))
+            text = text.replace(replaceable, koids[self.koids[-1]])
 
         return text
 
@@ -311,7 +312,7 @@ class Card: # pylint: disable=too-many-instance-attributes
         ruling = loads(await read(f'cache/{rid}'))
 
         if 'en' in ruling['qaData']:
-            self.rulings.append(Ruling(ruling))
+            self.rulings.append(Ruling(ruling['qaData']['en']))
 
     async def setrulings(self):
         '''Request and set the rulings'''
