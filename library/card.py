@@ -95,7 +95,7 @@ class Ruling:
 
     def replacekoids(self, text):
         '''Replace all KOIDs in the ruling text with card names and return the transformation'''
-        for replaceable in findall('<<[0-9]*>>', text):
+        for replaceable in findall('<<-?[0-9]*>>', text):
             koid = int(replaceable[2 : -2])
             text = text.replace(replaceable, koids[koid])
             self.koids.add(koid)
