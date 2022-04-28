@@ -88,7 +88,7 @@ class Ruling:
     def __init__(self, ruling):
         '''Initialise a ruling from JSON'''
         self.rid = ruling['id']
-        self.koids = []
+        self.koids = set()
         self.question = self.replacekoids(ruling['question'])
         self.answer = self.replacekoids(ruling['answer'])
         self.date = ruling['thisSrc']['date']
@@ -96,8 +96,9 @@ class Ruling:
     def replacekoids(self, text):
         '''Replace all KOIDs in the ruling text with card names and return the transformation'''
         for replaceable in findall('<<[0-9]*>>', text):
-            self.koids.append(int(replaceable[2 : -2]))
-            text = text.replace(replaceable, koids[self.koids[-1]])
+            koid = int(replaceable[2 : -2])
+            text = text.replace(replaceable, koids[koid])
+            self.koids.add(koid)
 
         return text
 
