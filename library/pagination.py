@@ -11,6 +11,5 @@ class Paginator(pages.Paginator):
         for button in self.children:
             button.disabled = True
 
-        if self.message:
-            with suppress(NotFound):
-                await self.message.edit(view=self)
+        with suppress(NotFound):
+            await self.message.edit(view=self)
