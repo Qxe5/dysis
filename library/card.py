@@ -311,6 +311,18 @@ class Card: # pylint: disable=too-many-instance-attributes
 
         return embed
 
+    async def make_art_embed(self, cid):
+        '''Make and return an art embed from a Card ID'''
+        embed = Embed(colour=Colour.brand_red())
+        embed.set_image(url=ART.substitute(cid=cid))
+        embed.set_footer(icon_url=icons.LOGO, text=f'{self.name} • {str(cid).zfill(8)}')
+
+        return embed
+
+    async def make_art_embeds(self):
+        '''Make and return art embeds'''
+        return [await self.make_art_embed(cid) for cid in self.ids]
+
     async def loadruling(self, rid):
         '''Load a ruling via its ID from the cache into a list'''
         ruling = loads(await read(f'cache/{rid}'))
