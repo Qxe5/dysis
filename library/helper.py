@@ -7,9 +7,9 @@ cardoption = Option(str, 'Card name:', autocomplete=autocomplete)
 mentionoption = Option(Member, 'Mention:', default=None)
 publicoption = Option(bool, 'Should the results be visible to everyone?', default=True)
 
-async def ping(ctx, member):
+async def ping(ctx, member, ephemeral):
     '''Mention a member'''
-    if member:
+    if member and not ephemeral:
         await ctx.respond(member.mention)
 
 async def noresult(ctx, term):
