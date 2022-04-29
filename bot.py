@@ -81,7 +81,7 @@ async def arts(
     if result := await lookup(card, results=1):
         result = result.pop()
 
-        paginator = Paginator(await result.make_image_embeds())
+        paginator = Paginator(await result.make_art_embeds())
         await paginator.respond(ctx.interaction, ephemeral=not public)
         await helper.ping(ctx, mention)
     else:
