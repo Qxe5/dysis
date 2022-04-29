@@ -43,7 +43,7 @@ async def search(
     if results := await lookup(card):
         paginator = Paginator([await result.make_embed() for result in results])
         await paginator.respond(ctx.interaction, ephemeral=not public)
-        await helper.ping(ctx, mention)
+        await helper.ping(ctx, mention, not public)
     else:
         await helper.noresult(ctx, card)
 
@@ -64,7 +64,7 @@ async def rulings( # pylint: disable=too-many-arguments
         if results := await result.getrulings(question, index):
             paginator = Paginator(results)
             await paginator.respond(ctx.interaction, ephemeral=not public)
-            await helper.ping(ctx, mention)
+            await helper.ping(ctx, mention, not public)
         else:
             await ctx.respond(f'`{result.name}` has no current rulings', ephemeral=not public)
     else:
@@ -83,7 +83,7 @@ async def arts(
 
         paginator = Paginator(await result.make_art_embeds())
         await paginator.respond(ctx.interaction, ephemeral=not public)
-        await helper.ping(ctx, mention)
+        await helper.ping(ctx, mention, not public)
     else:
         await helper.noresult(ctx, card)
 
