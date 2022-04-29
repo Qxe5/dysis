@@ -12,7 +12,7 @@ import aiohttp
 from discord import Embed, Colour
 
 from library import colours, icons
-from library.api import YGORG
+from library.api import ART, YGORG
 from library.collection import cards, koids
 from library.elements import Levels, Stats, Limits, Releases, Prices, Pendulum
 
@@ -288,7 +288,7 @@ class Card: # pylint: disable=too-many-instance-attributes
         '''Make and return the embed'''
         colour = colours.types[self.type]
         url = f'{YGORG}card#{self.koid}' if self.koid else Embed.Empty
-        image = f'https://storage.googleapis.com/ygoprodeck.com/pics_artgame/{min(self.ids)}.jpg'
+        image = ART.substitute(cid=min(self.ids))
         subicon = icons.subtypes[self.subtype] if self.subtype in icons.subtypes \
                                                                else icons.SKILLCHARACTER
 
