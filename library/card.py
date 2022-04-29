@@ -115,7 +115,10 @@ class Ruling:
         )
         embed.set_thumbnail(url=icons.RULING)
         embed.add_field(name='Involving', value=', '.join(koids[koid] for koid in self.koids))
-        embed.set_footer(icon_url=icons.LOGO, text=f'{self.rid} • {self.date}')
+        embed.set_footer(
+            icon_url=icons.LOGO,
+            text=f"{self.rid}{' • Speed Duel' if self.rid < 0 else ''} • {self.date}"
+        )
 
         return embed
 
