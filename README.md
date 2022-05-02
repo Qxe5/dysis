@@ -31,3 +31,11 @@ Every command includes the following options:
 * `qa` - Sort results by YGOrg Q&A ID **(Optional)**
 
 [Add to Server](https://discord.com/api/oauth2/authorize?client_id=937841297669124137&permissions=0&scope=bot%20applications.commands)
+
+<details>
+<summary>Credits</summary>
+
+* **Liz** (Lead Designer)
+* **Mac** (Lead Tester)
+* **Sam** (Tester)
+</details>
