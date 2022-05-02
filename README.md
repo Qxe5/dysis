@@ -29,3 +29,5 @@ Every command includes the following options:
 
 * `question` - Sort results by keywords in the question **(Optional)**
 * `qa` - Sort results by YGOrg Q&A ID **(Optional)**
+
+[Add to Server](https://discord.com/api/oauth2/authorize?client_id=937841297669124137&permissions=0&scope=bot%20applications.commands)
