@@ -13,11 +13,6 @@ Dysis includes autocomplete for searches with paginated results for much improve
 | `/rulings` | Search for all rulings related to a card |
 | `/servers` | Get the server count of Dysis            |
 
-Options:
-
-* `question` - Sort results by keywords in the question **(Optional)**
-* `qa` - Sort results by YGOrg Q&A ID **(Optional)**
-
 ## Common Options
 
 Every command includes the following options:
@@ -27,3 +22,8 @@ Every command includes the following options:
 * `mention` - A member you would like to share your search results with **(Optional)**
 
 * `public` - The option of a ephemeral response to help with channel clogging **(Optional)**
+
+## `/rulings` Options:
+
+* `question` - Sort results by keywords in the question **(Optional)**
+* `qa` - Sort results by YGOrg Q&A ID **(Optional)**
