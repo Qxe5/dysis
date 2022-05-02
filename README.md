@@ -13,6 +13,8 @@ Dysis includes autocomplete for searches with paginated results for much improve
 | `/rulings` | Search for all rulings related to a card |
 | `/servers` | Get the server count of Dysis            |
 
+![Search](https://cdn.discordapp.com/attachments/936463189237977139/970711136980840558/search.gif)
+
 ## Common Options
 
 Every command includes the following options:
