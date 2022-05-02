@@ -6,17 +6,11 @@ Dysis includes autocomplete for searches with paginated results for much improve
 
 ## Commands
 
-`/search`
-
-Search for TCG / OCG / Skill cards
-
-`/arts`
-
-Search for all artworks of a card
-
-`/rulings`
-
-Search for all rulings related to a card
+| Command    | Description                              |
+| -------    | -----------                              |
+| `/search`  | Search for TCG / OCG / Skill cards       |
+| `/arts`    | Search for all artworks of a card        |
+| `/rulings` | Search for all rulings related to a card |
 
 Options:
 
