@@ -25,7 +25,7 @@ Every command includes the following options:
 
 * `public` - The option of a ephemeral response to help with channel clogging **(Optional)**
 
-## `/rulings` Options:
+## `/rulings` Options
 
 * `question` - Sort results by keywords in the question **(Optional)**
 * `qa` - Sort results by YGOrg Q&A ID **(Optional)**
