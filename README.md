@@ -11,15 +11,12 @@ Dysis includes autocomplete for searches with paginated results for much improve
 | `/search`  | Search for TCG / OCG / Skill cards       |
 | `/arts`    | Search for all artworks of a card        |
 | `/rulings` | Search for all rulings related to a card |
+| `/servers` | Get the server count of Dysis            |
 
 Options:
 
 * `question` - Sort results by keywords in the question **(Optional)**
 * `qa` - Sort results by YGOrg Q&A ID **(Optional)**
-
-`/servers`
-
-Get the server count of Dysis
 
 ## Common Options
 
