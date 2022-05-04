@@ -5,7 +5,7 @@ from signal import signal, SIGINT
 import sys
 
 import discord
-from discord.ext import tasks
+from discord.ext import tasks, commands
 
 from cogs.status import Status
 from library import cards, helper
@@ -33,6 +33,7 @@ updatecards.start()
 
 # commands
 @bot.slash_command()
+@commands.bot_has_permissions(view_channel=True, read_message_history=True)
 async def search(
     ctx,
     card : helper.cardoption,
@@ -47,7 +48,16 @@ async def search(
     else:
         await helper.noresult(ctx, card)
 
+@search.error
+async def search_error(ctx, error):
+    '''Handle a lack of channel permissions'''
+    if isinstance(error, commands.BotMissingPermissions):
+        await helper.no_view_read(ctx)
+    else:
+        raise error
+
 @bot.slash_command()
+@commands.bot_has_permissions(view_channel=True, read_message_history=True)
 async def rulings( # pylint: disable=too-many-arguments
     ctx,
     card : helper.cardoption,
@@ -70,7 +80,16 @@ async def rulings( # pylint: disable=too-many-arguments
     else:
         await helper.noresult(ctx, card)
 
+@rulings.error
+async def rulings_error(ctx, error):
+    '''Handle a lack of channel permissions'''
+    if isinstance(error, commands.BotMissingPermissions):
+        await helper.no_view_read(ctx)
+    else:
+        raise error
+
 @bot.slash_command()
+@commands.bot_has_permissions(view_channel=True, read_message_history=True)
 async def arts(
     ctx,
     card : helper.cardoption,
@@ -86,6 +105,14 @@ async def arts(
         await helper.ping(ctx, mention, not public)
     else:
         await helper.noresult(ctx, card)
+
+@arts.error
+async def arts_error(ctx, error):
+    '''Handle a lack of channel permissions'''
+    if isinstance(error, commands.BotMissingPermissions):
+        await helper.no_view_read(ctx)
+    else:
+        raise error
 
 @bot.slash_command()
 async def servers(ctx):

@@ -7,6 +7,13 @@ cardoption = Option(str, 'Card name:', autocomplete=autocomplete)
 mentionoption = Option(Member, 'Mention:', default=None)
 publicoption = Option(bool, 'Should the results be visible to everyone?', default=True)
 
+async def no_view_read(ctx):
+    '''Handle a lack of the View Channels or Read Message History channel permissions'''
+    await ctx.respond(
+        'I need the `View Channels` and `Read Message History` permissions in this channel',
+        ephemeral=True
+    )
+
 async def ping(ctx, member, ephemeral):
     '''Mention a member'''
     if member and not ephemeral:
