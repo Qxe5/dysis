@@ -33,6 +33,24 @@ Every command includes the following options:
 [Add to Server](https://discord.com/api/oauth2/authorize?client_id=937841297669124137&permissions=0&scope=bot%20applications.commands)
 
 <details>
+<summary>Setup Your Own Instance</summary>
+
+**Requires Python 3.10.x or later**
+
+0. Create a Discord bot with
+    * Scopes: `bot`, `applications.commands`
+    * Permissions: `None`
+
+1. Execute
+```
+% python3 -m pip install --requirement requirements.txt
+% python3 bot.py
+```
+
+[Docker]()
+</details>
+
+<details>
 <summary>Credits</summary>
 
 * **Liz** (Lead Designer)
