@@ -47,7 +47,7 @@ Every command includes the following options:
 % python3 bot.py
 ```
 
-[Docker](https://hub.docker.com/repository/docker/dotbotio/dysis)
+[Docker](https://hub.docker.com/r/dotbotio/dysis)
 </details>
 
 <details>
