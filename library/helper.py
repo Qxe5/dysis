@@ -22,3 +22,7 @@ async def ping(ctx, member, ephemeral):
 async def noresult(ctx, term):
     '''Handle a lack of search results given a search term'''
     await ctx.respond(f'No cards found for search `{term}`', ephemeral=True)
+
+async def noattribute(ctx, card, attribute, ephemeral):
+    '''Handle a lack of a card attribute'''
+    await ctx.respond(f'`{card}` has no current {attribute}', ephemeral=ephemeral)
