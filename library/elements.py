@@ -6,5 +6,6 @@ Stats = namedtuple('Stats', 'attack defence')
 Limits = namedtuple('Limits', 'tcg ocg')
 Releases = namedtuple('Releases', 'tcg ocg')
 Prices = namedtuple('Prices', 'cardmarket tcgplayer')
+Set = namedtuple('Set', 'id name rarityid rarity price')
 
 Pendulum = namedtuple('Pendulum', 'pendulum monster flavour')
