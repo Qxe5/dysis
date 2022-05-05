@@ -14,7 +14,7 @@ from discord import Embed, Colour
 from library import colours, icons
 from library.api import ART, YGORG
 from library.collection import cards, koids
-from library.elements import Levels, Stats, Limits, Releases, Prices, Pendulum
+from library.elements import Levels, Stats, Limits, Releases, Prices, Set, Pendulum
 
 def extract_koid(card):
     '''Extract and return the KOID or None from the card JSON'''
@@ -56,6 +56,18 @@ def extract_prices(card):
     prices = card['card_prices'][0]
 
     return Prices(float(prices['cardmarket_price']), float(prices['tcgplayer_price']))
+
+def extract_sets(card):
+    '''Extract and return the sets from the card JSON'''
+    return tuple(
+        Set(
+            cset['set_code'],
+            cset['set_name'],
+            cset['set_rarity_code'],
+            cset['set_rarity'],
+            float(cset['set_price'])
+        ) for cset in card['card_sets']
+    ) if 'card_sets' in card else None
 
 async def read(path):
     '''Read and return the contents of the file at the path'''
@@ -149,6 +161,7 @@ class Card: # pylint: disable=too-many-instance-attributes
         self.releases = extract_releases(card)
         self.rarities = extract_rarities(card)
         self.prices = extract_prices(card)
+        self.sets = extract_sets(card)
         self.rulings = []
 
     def extract_text(self, text):
@@ -322,6 +335,39 @@ class Card: # pylint: disable=too-many-instance-attributes
     async def make_art_embeds(self):
         '''Make and return art embeds'''
         return [await self.make_art_embed(cid) for cid in self.ids]
+
+    async def make_set_embeds(self):
+        '''Make and return set embeds or None'''
+        if self.sets:
+            grouplen = 5
+            groups = (self.sets[i : i + grouplen] for i in range(0, len(self.sets), grouplen))
+
+            embeds = []
+
+            for group in groups:
+                with StringIO() as description:
+                    for cset in group:
+                        description.write(
+                            f'> **{cset.name}**\n'
+                            f'> {cset.id}\n'
+                            f'> *{cset.rarity} {cset.rarityid}*\n'
+                        )
+                        ygoprices = f'https://yugiohprices.com/browse_sets?set={quote(cset.name)}'
+                        description.write(
+                            f'> [${cset.price:.2f}]({ygoprices})\n\n' if cset.price else '\n'
+                        )
+
+                    embed = Embed(
+                        colour=Colour.brand_green(),
+                        description=description.getvalue().rstrip('\n')
+                    )
+                    embed.set_author(icon_url=icons.CARDS, name='Sets')
+                    embed.set_thumbnail(url=icons.BOX)
+                    embed.set_footer(icon_url=icons.LOGO, text=self.name)
+
+                    embeds.append(embed)
+
+            return embeds
 
     async def loadruling(self, rid):
         '''Load a ruling via its ID from the cache into a list'''
