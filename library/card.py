@@ -6,15 +6,18 @@ from json import dumps, loads
 from os import remove
 from os.path import exists
 from re import findall
+from string import Template
 from urllib.parse import quote
 
 import aiohttp
 from discord import Embed, Colour
 
 from library import colours, icons
-from library.api import ART, YGORG
+from library.api import ART, YGOPRICES, YGORG
 from library.collection import cards, koids
 from library.elements import Levels, Stats, Limits, Releases, Prices, Set, Pendulum
+
+ygoprices = Template('https://yugiohprices.com/browse_sets?set=$set')
 
 def extract_koid(card):
     '''Extract and return the KOID or None from the card JSON'''
@@ -352,9 +355,10 @@ class Card: # pylint: disable=too-many-instance-attributes
                             f'> {cset.id}\n'
                             f'> *{cset.rarity} {cset.rarityid}*\n'
                         )
-                        ygoprices = f'https://yugiohprices.com/browse_sets?set={quote(cset.name)}'
                         description.write(
-                            f'> [${cset.price:.2f}]({ygoprices})\n\n' if cset.price else '\n'
+                            f'> [${cset.price:.2f}]'
+                            f'({ygoprices.substitute(set=quote(cset.name))})\n\n'
+                            if cset.price else '\n'
                         )
 
                     embed = Embed(
@@ -368,6 +372,23 @@ class Card: # pylint: disable=too-many-instance-attributes
                     embeds.append(embed)
 
             return embeds
+
+    async def make_setimage_embed(self, name):
+        '''Make and return a set embed given its name'''
+        embed = Embed(colour=Colour.brand_green())
+        embed.set_author(icon_url=icons.CARDS, name=name, url=ygoprices.substitute(set=quote(name)))
+        embed.set_image(url=f'{YGOPRICES}set_image/{quote(name)}')
+        embed.set_footer(icon_url=icons.LOGO, text=self.name)
+
+        return embed
+
+    async def make_setimage_embeds(self):
+        '''Make and return set image embeds or None'''
+        if self.sets:
+            return [
+                await self.make_setimage_embed(cset)
+                for cset in sorted({cset.name for cset in self.sets})
+            ]
 
     async def loadruling(self, rid):
         '''Load a ruling via its ID from the cache into a list'''
