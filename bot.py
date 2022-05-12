@@ -113,6 +113,35 @@ async def sets_error(ctx, error):
 
 @bot.slash_command()
 @commands.bot_has_permissions(view_channel=True, read_message_history=True)
+async def setimages(
+    ctx,
+    card : helper.cardoption,
+    mention : helper.mentionoption,
+    public : helper.publicoption
+):
+    '''Search for card set images'''
+    if result := await lookup(card, results=1):
+        result = result.pop()
+
+        if embeds := await result.make_setimage_embeds():
+            paginator = Paginator(embeds)
+            await paginator.respond(ctx.interaction, ephemeral=not public)
+            await helper.ping(ctx, mention, not public)
+        else:
+            await helper.noattribute(ctx, result.name, 'set images', not public)
+    else:
+        await helper.noresult(ctx, card)
+
+@setimages.error
+async def setimages_error(ctx, error):
+    '''Handle a lack of channel permissions'''
+    if isinstance(error, commands.BotMissingPermissions):
+        await helper.no_view_read(ctx)
+    else:
+        raise error
+
+@bot.slash_command()
+@commands.bot_has_permissions(view_channel=True, read_message_history=True)
 async def rulings( # pylint: disable=too-many-arguments
     ctx,
     card : helper.cardoption,
