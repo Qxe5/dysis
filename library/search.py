@@ -14,8 +14,7 @@ async def autocomplete(ctx):
     term = ctx.options['card'].lower()
 
     return await fuzzy(term, [
-            card for card in cards
-            if card.startswith(term[0]) or term in card
+            card for card in cards if term in card
         ]
     ) if term else []
 
