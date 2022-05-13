@@ -1,7 +1,7 @@
 '''Pagination'''
 from contextlib import suppress
 
-from discord import NotFound
+from discord import NotFound, Forbidden, HTTPException
 from discord.ext import pages
 
 class Paginator(pages.Paginator):
@@ -11,5 +11,5 @@ class Paginator(pages.Paginator):
         for button in self.children:
             button.disabled = True
 
-        with suppress(NotFound):
+        with suppress(NotFound, Forbidden, HTTPException):
             await self.message.edit(view=self)
