@@ -33,7 +33,7 @@ updatecards.start()
 
 # commands
 @bot.slash_command()
-@commands.bot_has_permissions(view_channel=True, read_message_history=True)
+@commands.check(helper.check_view_read)
 async def search(
     ctx,
     card : helper.cardoption,
@@ -51,13 +51,13 @@ async def search(
 @search.error
 async def search_error(ctx, error):
     '''Handle a lack of channel permissions'''
-    if isinstance(error, commands.BotMissingPermissions):
+    if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
     else:
         raise error
 
 @bot.slash_command()
-@commands.bot_has_permissions(view_channel=True, read_message_history=True)
+@commands.check(helper.check_view_read)
 async def arts(
     ctx,
     card : helper.cardoption,
@@ -77,13 +77,13 @@ async def arts(
 @arts.error
 async def arts_error(ctx, error):
     '''Handle a lack of channel permissions'''
-    if isinstance(error, commands.BotMissingPermissions):
+    if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
     else:
         raise error
 
 @bot.slash_command()
-@commands.bot_has_permissions(view_channel=True, read_message_history=True)
+@commands.check(helper.check_view_read)
 async def sets(
     ctx,
     card : helper.cardoption,
@@ -106,13 +106,13 @@ async def sets(
 @sets.error
 async def sets_error(ctx, error):
     '''Handle a lack of channel permissions'''
-    if isinstance(error, commands.BotMissingPermissions):
+    if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
     else:
         raise error
 
 @bot.slash_command()
-@commands.bot_has_permissions(view_channel=True, read_message_history=True)
+@commands.check(helper.check_view_read)
 async def setimages(
     ctx,
     card : helper.cardoption,
@@ -135,13 +135,13 @@ async def setimages(
 @setimages.error
 async def setimages_error(ctx, error):
     '''Handle a lack of channel permissions'''
-    if isinstance(error, commands.BotMissingPermissions):
+    if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
     else:
         raise error
 
 @bot.slash_command()
-@commands.bot_has_permissions(view_channel=True, read_message_history=True)
+@commands.check(helper.check_view_read)
 async def rulings( # pylint: disable=too-many-arguments
     ctx,
     card : helper.cardoption,
@@ -167,7 +167,7 @@ async def rulings( # pylint: disable=too-many-arguments
 @rulings.error
 async def rulings_error(ctx, error):
     '''Handle a lack of channel permissions'''
-    if isinstance(error, commands.BotMissingPermissions):
+    if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
     else:
         raise error
