@@ -1,11 +1,23 @@
 '''Command helper'''
-from discord import Option, Member
+from discord import Option, Member, PartialMessageable
 
 from library.search import autocomplete
 
 cardoption = Option(str, 'Card name:', autocomplete=autocomplete)
 mentionoption = Option(Member, 'Mention:', default=None)
 publicoption = Option(bool, 'Should the results be visible to everyone?', default=True)
+
+async def check_view_read(ctx):
+    '''
+    Check and return if the bot has the View Channels
+    and Read Message History channel permissions
+    '''
+    if isinstance(ctx.channel, PartialMessageable):
+        return True
+
+    permissions = ctx.channel.permissions_for(ctx.guild.get_member(ctx.bot.user.id))
+
+    return permissions.view_channel and permissions.read_message_history
 
 async def no_view_read(ctx):
     '''Handle a lack of the View Channels or Read Message History channel permissions'''
