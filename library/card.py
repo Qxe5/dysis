@@ -68,7 +68,7 @@ def extract_sets(card):
             cset['set_name'],
             cset['set_rarity_code'],
             cset['set_rarity'],
-            float(cset['set_price'])
+            float(cset['set_price'].replace(',', ''))
         ) for cset in card['card_sets']
     ) if 'card_sets' in card else None
 
