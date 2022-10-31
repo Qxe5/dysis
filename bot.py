@@ -5,7 +5,7 @@ from signal import signal, SIGINT
 import sys
 
 import discord
-from discord.ext import tasks, commands
+from discord.ext import tasks
 
 from cogs.status import Status
 from library import cards, helper
@@ -32,8 +32,7 @@ async def updatecards():
 updatecards.start()
 
 # commands
-@bot.slash_command()
-@commands.check(helper.check_view_read)
+@bot.slash_command(checks=[helper.check_view_read])
 async def search(
     ctx,
     card : helper.cardoption,
@@ -56,8 +55,7 @@ async def search_error(ctx, error):
     else:
         raise error
 
-@bot.slash_command()
-@commands.check(helper.check_view_read)
+@bot.slash_command(checks=[helper.check_view_read])
 async def arts(
     ctx,
     card : helper.cardoption,
@@ -82,8 +80,7 @@ async def arts_error(ctx, error):
     else:
         raise error
 
-@bot.slash_command()
-@commands.check(helper.check_view_read)
+@bot.slash_command(checks=[helper.check_view_read])
 async def sets(
     ctx,
     card : helper.cardoption,
@@ -111,8 +108,7 @@ async def sets_error(ctx, error):
     else:
         raise error
 
-@bot.slash_command()
-@commands.check(helper.check_view_read)
+@bot.slash_command(checks=[helper.check_view_read])
 async def setimages(
     ctx,
     card : helper.cardoption,
@@ -140,8 +136,7 @@ async def setimages_error(ctx, error):
     else:
         raise error
 
-@bot.slash_command()
-@commands.check(helper.check_view_read)
+@bot.slash_command(checks=[helper.check_view_read])
 async def rulings( # pylint: disable=too-many-arguments
     ctx,
     card : helper.cardoption,
