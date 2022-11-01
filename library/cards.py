@@ -1,4 +1,4 @@
-'''Lookup table'''
+'''Card updates'''
 import asyncio
 
 import aiohttp

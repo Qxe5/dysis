@@ -1,3 +1,3 @@
-'''Card collection'''
+'''Card collections'''
 cards = {}
 koids = {}

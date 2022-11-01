@@ -1,7 +1,7 @@
 '''Card searching'''
 from difflib import get_close_matches
 
-from library.cards import cards
+from library.collection import cards
 
 DEFAULT_RESULTS = 25
 
