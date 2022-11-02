@@ -36,17 +36,12 @@ updatecards.start()
 async def search(
     ctx,
     card : helper.cardoption,
-    cardtype : discord.Option( # pylint: disable=unused-argument
-        str,
-        'Card Type:',
-        choices=['Monster', 'Spell', 'Trap', 'Token', 'Skill'],
-        default='All'
-    ),
+    cardtype : helper.cardtype_option,
     mention : helper.mentionoption,
     public : helper.publicoption
 ):
     '''Search for TCG/OCG/Skill cards'''
-    if results := await lookup(card):
+    if results := await lookup(card, cardtype):
         paginator = Paginator([await result.make_embed() for result in results])
         await paginator.respond(ctx.interaction, ephemeral=not public)
         await helper.ping(ctx, mention, not public)
@@ -65,11 +60,12 @@ async def search_error(ctx, error):
 async def arts(
     ctx,
     card : helper.cardoption,
+    cardtype : helper.cardtype_option,
     mention : helper.mentionoption,
     public : helper.publicoption
 ):
     '''Search for card arts'''
-    if result := await lookup(card, results=1):
+    if result := await lookup(card, cardtype, results=1):
         result = result.pop()
 
         paginator = Paginator(await result.make_art_embeds())
@@ -90,11 +86,12 @@ async def arts_error(ctx, error):
 async def sets(
     ctx,
     card : helper.cardoption,
+    cardtype : helper.cardtype_option,
     mention : helper.mentionoption,
     public : helper.publicoption
 ):
     '''Search for card sets'''
-    if result := await lookup(card, results=1):
+    if result := await lookup(card, cardtype, results=1):
         result = result.pop()
 
         if embeds := await result.make_set_embeds():
@@ -118,11 +115,12 @@ async def sets_error(ctx, error):
 async def setimages(
     ctx,
     card : helper.cardoption,
+    cardtype : helper.cardtype_option,
     mention : helper.mentionoption,
     public : helper.publicoption
 ):
     '''Search for card set images'''
-    if result := await lookup(card, results=1):
+    if result := await lookup(card, cardtype, results=1):
         result = result.pop()
 
         if embeds := await result.make_setimage_embeds():
@@ -146,13 +144,14 @@ async def setimages_error(ctx, error):
 async def rulings( # pylint: disable=too-many-arguments
     ctx,
     card : helper.cardoption,
+    cardtype : helper.cardtype_option,
     question : discord.Option(str, 'Keywords:', default=''),
     index : discord.Option(int, name='qa', description='YGOrg Q&A ID:', default=0),
     mention : helper.mentionoption,
     public : helper.publicoption
 ):
     '''Search for rulings'''
-    if result := await lookup(card, results=1):
+    if result := await lookup(card, cardtype, results=1):
         result = result.pop()
         await ctx.defer(ephemeral=not public)
 

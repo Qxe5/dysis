@@ -4,6 +4,12 @@ from discord import Option, Member, PartialMessageable
 from library.search import autocomplete
 
 cardoption = Option(str, 'Card name:', autocomplete=autocomplete)
+cardtype_option = Option(
+    str,
+    'Card Type:',
+    choices=['Monster', 'Spell', 'Trap', 'Token', 'Skill'],
+    default='All'
+)
 mentionoption = Option(Member, 'Mention:', default=None)
 publicoption = Option(bool, 'Should the results be visible to everyone?', default=True)
 
