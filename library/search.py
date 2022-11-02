@@ -1,7 +1,7 @@
 '''Card searching'''
 from difflib import get_close_matches
 
-from library.collection import cards
+from library.collection import cards, monsters, spells, traps, tokens, skills
 
 DEFAULT_RESULTS = 25
 
@@ -13,8 +13,22 @@ async def autocomplete(ctx):
     '''Return autocompletions from a current search term'''
     term = ctx.options['card'].lower()
 
+    match ctx.options['cardtype']:
+        case 'All':
+            cardpool = cards.keys()
+        case 'Monster':
+            cardpool = monsters
+        case 'Spell':
+            cardpool = spells
+        case 'Trap':
+            cardpool = traps
+        case 'Token':
+            cardpool = tokens
+        case 'Skill':
+            cardpool = skills
+
     return await fuzzy(term, [
-            card for card in cards if term in card
+            card for card in cardpool if term in card
         ]
     ) if term else []
 

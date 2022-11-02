@@ -36,6 +36,12 @@ updatecards.start()
 async def search(
     ctx,
     card : helper.cardoption,
+    cardtype : discord.Option( # pylint: disable=unused-argument
+        str,
+        'Card Type:',
+        choices=['Monster', 'Spell', 'Trap', 'Token', 'Skill'],
+        default='All'
+    ),
     mention : helper.mentionoption,
     public : helper.publicoption
 ):
