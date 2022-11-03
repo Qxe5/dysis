@@ -54,6 +54,8 @@ async def search_error(ctx, error):
     '''Handle a lack of channel permissions'''
     if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
+    elif isinstance(error, discord.Forbidden):
+        pass
     else:
         raise error
 
@@ -80,6 +82,8 @@ async def arts_error(ctx, error):
     '''Handle a lack of channel permissions'''
     if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
+    elif isinstance(error, discord.Forbidden):
+        pass
     else:
         raise error
 
@@ -106,6 +110,8 @@ async def randomcard_error(ctx, error):
     '''Handle a lack of channel permissions'''
     if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
+    elif isinstance(error, discord.Forbidden):
+        pass
     else:
         raise error
 
@@ -130,6 +136,8 @@ async def art_error(ctx, error):
     '''Handle a lack of channel permissions'''
     if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
+    elif isinstance(error, discord.Forbidden):
+        pass
     else:
         raise error
 
@@ -159,6 +167,8 @@ async def sets_error(ctx, error):
     '''Handle a lack of channel permissions'''
     if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
+    elif isinstance(error, discord.Forbidden):
+        pass
     else:
         raise error
 
@@ -188,6 +198,8 @@ async def setimages_error(ctx, error):
     '''Handle a lack of channel permissions'''
     if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
+    elif isinstance(error, discord.Forbidden):
+        pass
     else:
         raise error
 
@@ -220,6 +232,8 @@ async def rulings_error(ctx, error):
     '''Handle a lack of channel permissions'''
     if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
+    elif isinstance(error, discord.Forbidden):
+        pass
     else:
         raise error
 
@@ -230,6 +244,14 @@ async def servers(ctx):
         f'{len(bot.guilds)} Servers ({sum(guild.member_count for guild in bot.guilds)} Members)',
         ephemeral=True
     )
+
+@servers.error
+async def servers_error(_, error):
+    '''Handle a lack of channel permissions'''
+    if isinstance(error, discord.Forbidden):
+        pass
+    else:
+        raise error
 
 # cogs
 bot.add_cog(Status(bot))
