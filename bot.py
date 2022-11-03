@@ -1,6 +1,6 @@
 '''Entry point'''
 from getpass import getpass
-import logging
+from logging import basicConfig
 from random import choice
 from signal import signal, SIGINT
 import sys
@@ -14,7 +14,7 @@ from library.pagination import Paginator
 from library.search import lookup, cardpool
 
 signal(SIGINT, lambda signalnumber, stackframe: sys.exit())
-logging.basicConfig()
+basicConfig()
 
 # init
 bot = discord.Bot()
