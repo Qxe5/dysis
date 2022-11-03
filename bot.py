@@ -1,6 +1,7 @@
 '''Entry point'''
 from getpass import getpass
 import logging
+from random import choice
 from signal import signal, SIGINT
 import sys
 
@@ -10,7 +11,7 @@ from discord.ext import tasks
 from cogs.status import Status
 from library import cards, helper
 from library.pagination import Paginator
-from library.search import lookup
+from library.search import lookup, cardpool
 
 signal(SIGINT, lambda signalnumber, stackframe: sys.exit())
 logging.basicConfig()
@@ -76,6 +77,56 @@ async def arts(
 
 @arts.error
 async def arts_error(ctx, error):
+    '''Handle a lack of channel permissions'''
+    if isinstance(error, discord.CheckFailure):
+        await helper.no_view_read(ctx)
+    else:
+        raise error
+
+randomgroup = bot.create_group(name='random')
+
+@randomgroup.command(name='card', checks=[helper.check_view_read])
+async def randomcard(
+    ctx,
+    cardtype : helper.cardtype_option,
+    mention : helper.mentionoption,
+    public : helper.publicoption
+):
+    '''Get a random card'''
+    await ctx.invoke(
+        bot.get_command('search'),
+        card=choice(tuple(await cardpool(cardtype))),
+        cardtype=cardtype,
+        mention=mention,
+        public=public
+    )
+
+@randomcard.error
+async def randomcard_error(ctx, error):
+    '''Handle a lack of channel permissions'''
+    if isinstance(error, discord.CheckFailure):
+        await helper.no_view_read(ctx)
+    else:
+        raise error
+
+@randomgroup.command(checks=[helper.check_view_read])
+async def art(
+    ctx,
+    cardtype : helper.cardtype_option,
+    mention : helper.mentionoption,
+    public : helper.publicoption
+):
+    '''Get a random card art'''
+    await ctx.invoke(
+        bot.get_command('arts'),
+        card=choice(tuple(await cardpool(cardtype))),
+        cardtype=cardtype,
+        mention=mention,
+        public=public
+    )
+
+@art.error
+async def art_error(ctx, error):
     '''Handle a lack of channel permissions'''
     if isinstance(error, discord.CheckFailure):
         await helper.no_view_read(ctx)
