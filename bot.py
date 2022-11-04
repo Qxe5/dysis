@@ -11,7 +11,8 @@ from discord.ext import tasks
 from cogs.status import Status
 from library import cards, helper
 from library.pagination import Paginator
-from library.search import lookup, cardpool
+from library.search import lookup, cardpool, getoptions
+from library.ui import Who
 
 signal(SIGINT, lambda signalnumber, stackframe: sys.exit())
 basicConfig()
@@ -222,6 +223,23 @@ async def rulings_error(ctx, error):
         await helper.no_view_read(ctx)
     else:
         raise error
+
+@bot.slash_command()
+async def who(
+    ctx,
+    mention : helper.mentionoption,
+    public : helper.publicoption
+):
+    '''Get a trivia question'''
+    for embed in (options := await getoptions()).values():
+        if embed:
+            await ctx.respond(
+                embed=embed,
+                view=Who(ctx.author, options, not public),
+                ephemeral=not public
+            )
+            await helper.ping(ctx, mention, not public)
+            break
 
 @bot.slash_command()
 async def servers(ctx):

@@ -1,6 +1,7 @@
 '''JSON to Object mapping'''
 import asyncio
 from contextlib import suppress
+from datetime import datetime, timedelta
 from io import StringIO
 from json import dumps, loads
 from os import remove
@@ -11,6 +12,7 @@ from urllib.parse import quote
 
 import aiohttp
 from discord import Embed, Colour
+from discord.utils import format_dt
 
 from library import colours, icons
 from library.api import ART, YGOPRICES, YGORG
@@ -389,6 +391,19 @@ class Card: # pylint: disable=too-many-instance-attributes
                 await self.make_setimage_embed(cset)
                 for cset in sorted({cset.name for cset in self.sets})
             ]
+
+    async def make_who_embed(self, seconds=30):
+        '''Make and return a question embed, giving X seconds to answer'''
+        timestamp = format_dt(datetime.now() + timedelta(seconds=seconds), style='T')
+
+        embed = Embed(
+            colour=Colour.nitro_pink(),
+            description=f'You have {seconds} seconds to answer ({timestamp})'
+        )
+        embed.set_author(icon_url=icons.QUESTION, name='What card is this?')
+        embed.set_image(url=ART.substitute(cid=self.ids[0]))
+
+        return embed
 
     async def loadruling(self, rid):
         '''Load a ruling via its ID from the cache into a list'''
