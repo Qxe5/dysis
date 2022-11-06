@@ -7,8 +7,10 @@ async def record(user, correct):
     path = 'cache/scores'
 
     with shelve.open(path) as scores:
-        if score := scores.setdefault(user, (1, 0) if correct else (0, 1)):
-            wins, losses = score
+        if user not in scores:
+            scores[user] = (1, 0) if correct else (0, 1)
+        else:
+            wins, losses = scores[user]
             scores[user] = (wins + 1, losses) if correct else (wins, losses + 1)
 
         return scores[user]
