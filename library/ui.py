@@ -1,13 +1,18 @@
 '''UI'''
 from discord import ui, SelectOption, Embed, Colour, NotFound
 
-from library.icons import TICK, CROSS
+from library.icons import TICK, CROSS, LOGO
+from library import score
 
-async def mark_embed(answer, correct_answer):
-    '''Make and return an embed portraying if the answer provided matches the correct answer'''
+async def mark_embed(answer, correct_answer, user_score):
+    '''
+    Make and return an embed depicting if the answer provided matches the correct answer,
+    and the users score
+    '''
     correct = answer == correct_answer
+    wins, losses = user_score
 
-    embed = Embed(colour=Colour.green() if correct else Colour.dark_red())
+    embed = Embed(colour=Colour.green() if correct else Colour.brand_red())
     embed.set_author(
         icon_url=TICK if correct else CROSS,
         name='Correct' if correct else 'Incorrect'
@@ -15,6 +20,11 @@ async def mark_embed(answer, correct_answer):
     embed.add_field(name='Your Answer', value=answer)
     if not correct:
         embed.add_field(name='Correct Answer', value=correct_answer, inline=False)
+
+    embed.set_footer(
+        icon_url=LOGO,
+        text=f'Win Rate: {wins / losses * 100:.2f}% ({wins} - {losses})'
+    )
 
     return embed
 
@@ -41,13 +51,16 @@ class Who(ui.View):
         )
 
     async def on_timeout(self):
-        '''Delete the items in the view'''
+        '''Handle no response'''
         if self.children:
             self.clear_items()
+            user_score = await score.record(self.author.id, correct=False)
 
             try:
                 await self.message.edit(
-                    embeds=self.message.embeds + [await mark_embed('N/A', self.correct_answer)],
+                    embeds=self.message.embeds + [
+                        await mark_embed('N/A', self.correct_answer, user_score)
+                    ],
                     view=self
                 )
             except NotFound:
@@ -62,6 +75,13 @@ class WhoSelect(ui.Select):
             await self.view.message.edit(view=self.view)
 
             await interaction.response.send_message(
-                embed=await mark_embed(self.values[0], self.view.correct_answer),
+                embed=await mark_embed(
+                    self.values[0],
+                    self.view.correct_answer,
+                    await score.record(
+                        interaction.user.id,
+                        correct=self.values[0] == self.view.correct_answer
+                    )
+                ),
                 ephemeral=self.view.ephemeral
             )
