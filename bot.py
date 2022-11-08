@@ -248,7 +248,7 @@ async def leaderboard(
     public : helper.publicoption
 ):
     '''Get the trivia leaderboard'''
-    await ctx.defer()
+    await ctx.defer(ephemeral=not public)
     paginator = Paginator(await score.leaderboard(bot))
     await paginator.respond(ctx.interaction, ephemeral=not public)
     await helper.ping(ctx, mention, not public)
