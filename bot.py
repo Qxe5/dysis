@@ -9,7 +9,7 @@ import discord
 from discord.ext import tasks
 
 from cogs.status import Status
-from library import cards, helper
+from library import cards, score, helper
 from library.pagination import Paginator
 from library.search import lookup, cardpool, getoptions
 from library.ui import Who
@@ -240,6 +240,18 @@ async def who(
             )
             await helper.ping(ctx, mention, not public)
             break
+
+@bot.slash_command(checks=[helper.check_view_read])
+async def leaderboard(
+    ctx,
+    mention : helper.mentionoption,
+    public : helper.publicoption
+):
+    '''Get the trivia leaderboard'''
+    await ctx.defer()
+    paginator = Paginator(await score.leaderboard(bot))
+    await paginator.respond(ctx.interaction, ephemeral=not public)
+    await helper.ping(ctx, mention, not public)
 
 @bot.slash_command()
 async def servers(ctx):

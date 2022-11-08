@@ -23,7 +23,7 @@ async def mark_embed(answer, correct_answer, user_score):
 
     embed.set_footer(
         icon_url=LOGO,
-        text=f'Win Rate: {wins / (wins + losses) * 100:.2f}% ({wins} - {losses})'
+        text=f'Win Rate: {await score.percent(wins, losses)} ({wins} - {losses})'
     )
 
     return embed
