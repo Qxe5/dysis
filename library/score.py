@@ -47,7 +47,7 @@ async def rankings():
 async def leaderboard(bot):
     '''Make and return the leaderboard'''
     top = 20
-    ranks = await rankings()[:top]
+    ranks = (await rankings())[:top]
 
     embeds = []
     medals = [BRONZE, SILVER, GOLD]
