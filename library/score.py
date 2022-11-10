@@ -29,6 +29,10 @@ async def record(user, correct):
 
         return scores[user]
 
+async def points(wins, losses):
+    '''Get and return the number of points from the number of wins and losses'''
+    return ceil(await derive(wins, losses) * max(wins - losses, 0))
+
 async def rankings():
     '''
     Calculate and return the rankings of all players,
@@ -39,10 +43,9 @@ async def rankings():
     with shelve.open(PATH) as scores:
         for user, score in scores.items():
             wins, losses = score
-            score = ceil(await derive(wins, losses) * max(wins - losses, 0))
-            ranks.append((user, wins, losses, score))
+            ranks.append((user, wins, losses, await points(wins, losses)))
 
-    return sorted(ranks, key=lambda entry: entry[3], reverse=True)
+    return sorted(ranks, key=lambda entry: entry[-1], reverse=True)
 
 async def rank(user):
     '''Get and return the rank of the user'''

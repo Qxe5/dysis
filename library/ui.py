@@ -25,6 +25,7 @@ async def mark_embed(answer, correct_answer, user_score, rank):
     embed.set_footer(
         icon_url=LOGO,
         text=f'Win Rate: {await score.percent(wins, losses)} ({wins} - {losses})\n'
+             f'Score: {await score.points(wins, losses)}\n'
              f'Rank: {rank} / {players}'
     )
 
