@@ -44,9 +44,14 @@ async def rankings():
 
     return sorted(ranks, key=lambda entry: entry[3], reverse=True)
 
-async def leaderboard(bot):
+async def rank(user):
+    '''Get and return the rank of the user'''
+    for player in (players := await rankings()):
+        if player[0] == str(user):
+            return (players.index(player) + 1, len(players))
+
+async def leaderboard(bot, top=20):
     '''Make and return the leaderboard'''
-    top = 20
     ranks = (await rankings())[:top]
 
     embeds = []

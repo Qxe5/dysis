@@ -4,13 +4,14 @@ from discord import ui, SelectOption, Embed, Colour, NotFound
 from library.icons import TICK, CROSS, LOGO
 from library import score
 
-async def mark_embed(answer, correct_answer, user_score):
+async def mark_embed(answer, correct_answer, user_score, rank):
     '''
     Make and return an embed depicting if the answer provided matches the correct answer,
-    and the users score
+    the user's score, and their rank
     '''
     correct = answer == correct_answer
     wins, losses = user_score
+    rank, players = rank
 
     embed = Embed(colour=Colour.green() if correct else Colour.brand_red())
     embed.set_author(
@@ -23,7 +24,8 @@ async def mark_embed(answer, correct_answer, user_score):
 
     embed.set_footer(
         icon_url=LOGO,
-        text=f'Win Rate: {await score.percent(wins, losses)} ({wins} - {losses})'
+        text=f'Win Rate: {await score.percent(wins, losses)} ({wins} - {losses})\n'
+             f'Rank: {rank} / {players}'
     )
 
     return embed
@@ -59,7 +61,12 @@ class Who(ui.View):
             try:
                 await self.message.edit(
                     embeds=self.message.embeds + [
-                        await mark_embed('N/A', self.correct_answer, user_score)
+                        await mark_embed(
+                            'N/A',
+                            self.correct_answer,
+                            user_score,
+                            await score.rank(self.author.id)
+                        )
                     ],
                     view=self
                 )
@@ -81,7 +88,8 @@ class WhoSelect(ui.Select):
                     await score.record(
                         interaction.user.id,
                         correct=self.values[0] == self.view.correct_answer
-                    )
+                    ),
+                    await score.rank(interaction.user.id)
                 ),
                 ephemeral=self.view.ephemeral
             )

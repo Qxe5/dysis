@@ -249,9 +249,16 @@ async def leaderboard(
 ):
     '''Get the trivia leaderboard'''
     await ctx.defer(ephemeral=not public)
-    paginator = Paginator(await score.leaderboard(bot))
-    await paginator.respond(ctx.interaction, ephemeral=not public)
-    await helper.ping(ctx, mention, not public)
+
+    if ranks := await score.leaderboard(bot):
+        paginator = Paginator(ranks)
+        await paginator.respond(ctx.interaction, ephemeral=not public)
+        await helper.ping(ctx, mention, not public)
+    else:
+        await ctx.respond(
+            'There is no leaderboard at this time. Be the first!',
+            ephemeral=not public
+        )
 
 @bot.slash_command()
 async def servers(ctx):
