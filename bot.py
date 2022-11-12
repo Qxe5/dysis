@@ -231,15 +231,15 @@ async def who(
     public : helper.publicoption
 ):
     '''Get a trivia question'''
-    for embed in (options := await getoptions()).values():
-        if embed:
-            await ctx.respond(
-                embed=embed,
-                view=Who(ctx.author, options, not public),
-                ephemeral=not public
-            )
-            await helper.ping(ctx, mention, not public)
-            break
+    if options := await getoptions():
+        await ctx.respond(
+            embed=[embed for embed in options.values() if embed].pop(),
+            view=Who(ctx.author, options, not public),
+            ephemeral=not public
+        )
+        await helper.ping(ctx, mention, not public)
+    else:
+        await ctx.respond('Failed to get the image. Please try again later.', ephemeral=not public)
 
 @bot.slash_command(checks=[helper.check_view_read])
 async def leaderboard(

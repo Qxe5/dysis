@@ -46,9 +46,9 @@ async def lookup(term, cardtype, results=DEFAULT_RESULTS):
     if matches := await fuzzy(term.lower(), await cardpool(cardtype), results):
         return [cards[match] for match in matches]
 
-async def getoptions(number=4):
-    '''Get and return a number of multiple choice options'''
-    while True:
+async def getoptions(number=4, retries=8):
+    '''Get and return a number of multiple choice options, or None on image API failure'''
+    while retries:
         options = sample(
             tuple(card for card in cards.values() if card.type != 'Skill Card'),
             number
@@ -63,6 +63,7 @@ async def getoptions(number=4):
                 aiohttp.ClientResponseError,
                 asyncio.TimeoutError
             ):
+                retries -= 1
                 continue
 
         return {
