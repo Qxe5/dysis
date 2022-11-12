@@ -1,5 +1,6 @@
 '''Card updates'''
 import asyncio
+from string import punctuation
 
 import aiohttp
 
@@ -18,6 +19,14 @@ async def retrieve_card_data():
         except (aiohttp.ClientConnectionError, aiohttp.ClientResponseError, asyncio.TimeoutError):
             return None
 
+async def clean(text):
+    '''Remove punctuation and unicode from the text and return it'''
+    return (
+        ' '.join(text.translate(str.maketrans({mark : ' ' for mark in punctuation})).split())
+           .encode('ascii', 'ignore')
+           .decode()
+    )
+
 async def generatecards():
     '''Update lookup table'''
     if card_data := await retrieve_card_data():
@@ -26,7 +35,7 @@ async def generatecards():
 
         for card_datum in card_data:
             card = Card(card_datum)
-            cards[card.name.lower()] = card
+            cards[await clean(card.name.lower())] = card
             koids[card.koid] = card.name
 
             if 'Monster' in card.type:
