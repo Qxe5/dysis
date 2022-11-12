@@ -53,8 +53,8 @@ def extract_releases(card):
 
 def extract_rarities(card):
     '''Extract and return the rarities or None from the card JSON'''
-    return tuple(sorted({cardset['set_rarity'] for cardset in card['card_sets']})) \
-           if 'card_sets' in card else None
+    return (tuple(sorted({cardset['set_rarity'] for cardset in card['card_sets']}))
+            if 'card_sets' in card else None)
 
 def extract_prices(card):
     '''Extract and return the prices from the card JSON'''
@@ -148,8 +148,8 @@ class Card: # pylint: disable=too-many-instance-attributes
 
         self.type = card['type']
         self.subtype = card['race']
-        self.icon = icons.magic[self.type] if self.type in icons.magic \
-                                           else icons.attributes[card['attribute']]
+        self.icon = (icons.magic[self.type] if self.type in icons.magic
+                                            else icons.attributes[card['attribute']])
 
         self.levels = Levels(
             card['level'] if 'level' in card else None,
@@ -311,8 +311,8 @@ class Card: # pylint: disable=too-many-instance-attributes
         colour = colours.types[self.type]
         url = f'{YGORG}card#{self.koid}' if self.koid else Embed.Empty
         image = await self.make_art()
-        subicon = icons.subtypes[self.subtype] if self.subtype in icons.subtypes \
-                                                               else icons.SKILLCHARACTER
+        subicon = (icons.subtypes[self.subtype] if self.subtype in icons.subtypes
+                                                                else icons.SKILLCHARACTER)
 
         embed = Embed(colour=colour, title=await self.make_title(subicon), description=self.text)
         embed.set_author(icon_url=self.icon, name=self.name, url=url)
