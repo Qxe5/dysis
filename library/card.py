@@ -302,11 +302,15 @@ class Card: # pylint: disable=too-many-instance-attributes
 
             return title.getvalue().rstrip('\n')
 
+    async def make_art(self):
+        '''Make and return the URL of the main artwork image'''
+        return ART.substitute(cid=min(self.ids))
+
     async def make_embed(self):
         '''Make and return the embed'''
         colour = colours.types[self.type]
         url = f'{YGORG}card#{self.koid}' if self.koid else Embed.Empty
-        image = ART.substitute(cid=min(self.ids))
+        image = await self.make_art()
         subicon = icons.subtypes[self.subtype] if self.subtype in icons.subtypes \
                                                                else icons.SKILLCHARACTER
 
@@ -401,7 +405,7 @@ class Card: # pylint: disable=too-many-instance-attributes
             description=f'You have {seconds} seconds to answer ({timestamp})'
         )
         embed.set_author(icon_url=icons.QUESTION, name='What card is this?')
-        embed.set_image(url=ART.substitute(cid=self.ids[0]))
+        embed.set_image(url=await self.make_art())
 
         return embed
 

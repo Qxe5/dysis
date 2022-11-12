@@ -1,6 +1,9 @@
 '''Card searching'''
+import asyncio
 from difflib import get_close_matches
 from random import sample, choice
+
+import aiohttp
 
 from library.collection import cards, monsters, spells, traps, tokens, skills
 
@@ -45,10 +48,24 @@ async def lookup(term, cardtype, results=DEFAULT_RESULTS):
 
 async def getoptions(number=4):
     '''Get and return a number of multiple choice options'''
-    options = sample(tuple(cards.values()), number)
-    correct = choice(options)
+    while True:
+        options = sample(
+            tuple(card for card in cards.values() if card.type != 'Skill Card'),
+            number
+        )
+        correct = choice(options)
 
-    return {
-        option.name : await option.make_who_embed() if option is correct else None
-        for option in options
-    }
+        async with aiohttp.ClientSession(raise_for_status=True) as client:
+            try:
+                await client.head(await correct.make_art())
+            except (
+                aiohttp.ClientConnectionError,
+                aiohttp.ClientResponseError,
+                asyncio.TimeoutError
+            ):
+                continue
+
+        return {
+            option.name : await option.make_who_embed() if option is correct else None
+            for option in options
+        }
