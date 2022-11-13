@@ -39,7 +39,7 @@ class Who(ui.View):
         the multiple choice options available to them,
         and whether they should be responded to publicly
         '''
-        super().__init__(timeout=15)
+        super().__init__(timeout=20)
 
         self.author = author
         self.ephemeral = ephemeral
