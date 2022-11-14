@@ -2,12 +2,22 @@
 import asyncio
 from difflib import get_close_matches
 from random import sample, choice
+from string import punctuation
 
 import aiohttp
 
 from library.collection import cards, monsters, spells, traps, tokens, skills
 
 DEFAULT_RESULTS = 25
+
+async def clean(text):
+    '''Remove punctuation and unicode from the text, convert it to lowercase and return it'''
+    return (
+        ' '.join(text.translate(str.maketrans({mark : ' ' for mark in punctuation})).split())
+           .encode('ascii', 'ignore')
+           .decode()
+           .lower()
+    )
 
 async def cardpool(cardtype):
     '''Return the card pool given a card type'''
@@ -31,7 +41,7 @@ async def fuzzy(comparate, comparables, results=DEFAULT_RESULTS):
 
 async def autocomplete(ctx):
     '''Return autocompletions from a current search term'''
-    term = ctx.options['card'].lower()
+    term = await clean(ctx.options['card'])
 
     return await fuzzy(term, [
             card for card in await cardpool(ctx.options['cardtype']) if term in card
@@ -43,7 +53,7 @@ async def lookup(term, cardtype, results=DEFAULT_RESULTS):
     Lookup a search term in the lookup table given a card type,
     and return the closest results or None
     '''
-    if matches := await fuzzy(term.lower(), await cardpool(cardtype), results):
+    if matches := await fuzzy(await clean(term), await cardpool(cardtype), results):
         return [cards[match] for match in matches]
 
 async def getoptions(number=4, retries=8):

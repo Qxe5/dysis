@@ -1,12 +1,12 @@
 '''Card updates'''
 import asyncio
-from string import punctuation
 
 import aiohttp
 
 from library.api import YGOPRO
 from library.card import Card
 from library.collection import cards, koids, monsters, spells, traps, tokens, skills
+from library.search import clean
 
 async def retrieve_card_data():
     '''Retrieve and return raw card data or None on error'''
@@ -19,14 +19,6 @@ async def retrieve_card_data():
         except (aiohttp.ClientConnectionError, aiohttp.ClientResponseError, asyncio.TimeoutError):
             return None
 
-async def clean(text):
-    '''Remove punctuation and unicode from the text and return it'''
-    return (
-        ' '.join(text.translate(str.maketrans({mark : ' ' for mark in punctuation})).split())
-           .encode('ascii', 'ignore')
-           .decode()
-    )
-
 async def generatecards():
     '''Update lookup table'''
     if card_data := await retrieve_card_data():
@@ -35,16 +27,17 @@ async def generatecards():
 
         for card_datum in card_data:
             card = Card(card_datum)
-            cards[await clean(card.name.lower())] = card
+            name = await clean(card.name)
+            cards[name] = card
             koids[card.koid] = card.name
 
             if 'Monster' in card.type:
-                monsters.append(card.name.lower())
+                monsters.append(name)
             elif 'Spell' in card.type:
-                spells.append(card.name.lower())
+                spells.append(name)
             elif 'Trap' in card.type:
-                traps.append(card.name.lower())
+                traps.append(name)
             elif 'Token' in card.type:
-                tokens.append(card.name.lower())
+                tokens.append(name)
             elif 'Skill' in card.type:
-                skills.append(card.name.lower())
+                skills.append(name)
