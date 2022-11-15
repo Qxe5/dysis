@@ -1,4 +1,6 @@
 '''UI'''
+from contextlib import suppress
+
 from discord import ui, SelectOption, Embed, Colour, NotFound
 
 from library.icons import TICK, CROSS, LOGO
@@ -59,7 +61,7 @@ class Who(ui.View):
             self.clear_items()
             user_score = await score.record(self.author.id, correct=False)
 
-            try:
+            with suppress(NotFound):
                 await self.message.edit(
                     embeds=self.message.embeds + [
                         await mark_embed(
@@ -71,8 +73,6 @@ class Who(ui.View):
                     ],
                     view=self
                 )
-            except NotFound:
-                pass
 
 class WhoSelect(ui.Select):
     '''A representation of a multiple choice selection'''
