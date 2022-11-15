@@ -35,21 +35,17 @@ async def mark_embed(answer, correct_answer, user_score, rank):
 
 class Who(ui.View):
     '''A representation of a container for UI items'''
-    def __init__(self, author, options, ephemeral):
+    def __init__(self, author, options, ephemeral, **kwargs):
         '''
         Initialize the container with the state of who requested the container,
         the multiple choice options available to them,
         and whether they should be responded to publicly
         '''
-        super().__init__(timeout=20)
-
+        super().__init__(**kwargs)
         self.author = author
+        self.options = options
         self.answer = [name for name, correct in options.items() if correct].pop()
         self.ephemeral = ephemeral
-
-        self.add_item(
-            WhoSelect(options=[SelectOption(label=option) for option in options])
-        )
 
     async def on_timeout(self):
         '''Handle no response'''
@@ -69,6 +65,13 @@ class Who(ui.View):
                     ],
                     view=self
                 )
+
+class WhoEasy(Who):
+    '''A representation of an easy game'''
+    def __init__(self, *args, **kwargs):
+        '''Initialize an easy game'''
+        super().__init__(*args, **kwargs)
+        self.add_item(WhoSelect(options=[SelectOption(label=option) for option in self.options]))
 
 class WhoSelect(ui.Select):
     '''A representation of a multiple choice selection'''

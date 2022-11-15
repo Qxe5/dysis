@@ -12,7 +12,7 @@ from cogs.status import Status
 from library import cards, score, helper
 from library.pagination import Paginator
 from library.search import lookup, cardpool, getoptions
-from library.ui import Who
+from library.ui import WhoEasy
 
 signal(SIGINT, lambda signalnumber, stackframe: sys.exit())
 basicConfig()
@@ -234,7 +234,7 @@ async def who(
     if options := await getoptions():
         await ctx.respond(
             embed=[embed for embed in options.values() if embed].pop(),
-            view=Who(ctx.author, options, not public),
+            view=WhoEasy(ctx.author, options, not public, timeout=20),
             ephemeral=not public
         )
         await helper.ping(ctx, mention, not public)
