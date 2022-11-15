@@ -32,12 +32,12 @@ async def generatecards():
             koids[card.koid] = card.name
 
             if 'Monster' in card.type:
-                monsters.append(name)
+                monsters.add(name)
             elif 'Spell' in card.type:
-                spells.append(name)
+                spells.add(name)
             elif 'Trap' in card.type:
-                traps.append(name)
+                traps.add(name)
             elif 'Token' in card.type:
-                tokens.append(name)
+                tokens.add(name)
             elif 'Skill' in card.type:
-                skills.append(name)
+                skills.add(name)

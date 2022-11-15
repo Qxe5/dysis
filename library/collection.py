@@ -1,8 +1,8 @@
 '''Card collections'''
 cards = {}
 koids = {}
-monsters = []
-spells = []
-traps = []
-tokens = []
-skills = []
+monsters = set()
+spells = set()
+traps = set()
+tokens = set()
+skills = set()
