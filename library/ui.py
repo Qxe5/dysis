@@ -3,8 +3,8 @@ from contextlib import suppress
 
 from discord import ui, SelectOption, Embed, Colour, NotFound
 
-from library.icons import TICK, CROSS, LOGO
 from library import score
+from library.icons import TICK, CROSS, LOGO
 
 async def mark_embed(answer, correct_answer, user_score, rank):
     '''
