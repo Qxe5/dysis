@@ -44,12 +44,8 @@ class Who(ui.View):
         super().__init__(timeout=20)
 
         self.author = author
+        self.answer = [name for name, correct in options.items() if correct].pop()
         self.ephemeral = ephemeral
-
-        for name, correct in options.items():
-            if correct:
-                self.correct_answer = name
-                break
 
         self.add_item(
             WhoSelect(options=[SelectOption(label=option) for option in options])
@@ -66,7 +62,7 @@ class Who(ui.View):
                     embeds=self.message.embeds + [
                         await mark_embed(
                             'N/A',
-                            self.correct_answer,
+                            self.answer,
                             user_score,
                             await score.rank(self.author.id)
                         )
@@ -85,10 +81,10 @@ class WhoSelect(ui.Select):
             await interaction.response.send_message(
                 embed=await mark_embed(
                     self.values[0],
-                    self.view.correct_answer,
+                    self.view.answer,
                     await score.record(
                         interaction.user.id,
-                        correct=self.values[0] == self.view.correct_answer
+                        correct=self.values[0] == self.view.answer
                     ),
                     await score.rank(interaction.user.id)
                 ),
