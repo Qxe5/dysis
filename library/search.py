@@ -21,19 +21,15 @@ async def clean(text):
 
 async def cardpool(cardtype):
     '''Return the card pool given a card type'''
-    match cardtype:
-        case 'All':
-            return cards.keys()
-        case 'Monster':
-            return monsters
-        case 'Spell':
-            return spells
-        case 'Trap':
-            return traps
-        case 'Token':
-            return tokens
-        case 'Skill':
-            return skills
+    return {
+        'All'     : cards.keys(),
+        'CG'      : cards.keys() - skills,
+        'Monster' : monsters,
+        'Spell'   : spells,
+        'Trap'    : traps,
+        'Token'   : tokens,
+        'Skill'   : skills
+    }[cardtype]
 
 async def fuzzy(comparate, comparables, results=DEFAULT_RESULTS):
     '''Compare the comparate with the comparables and return results'''
