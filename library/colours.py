@@ -2,7 +2,7 @@
 colours = {
         'black'      : 0x000000,
         'dark blue'  : 0x00008b,
-        'gray'       : 0xc0c0c0,
+        'grey'       : 0xc0c0c0,
         'green'      : 0x1d9e74,
         'light blue' : 0x9db5cc,
         'orange'     : 0xff8b53,
