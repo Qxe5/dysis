@@ -1,10 +1,11 @@
 '''UI'''
 from contextlib import suppress
 
-from discord import ui, SelectOption, Embed, Colour, NotFound
+from discord import ui, SelectOption, ButtonStyle, Embed, Colour, NotFound
 
 from library import score
 from library.icons import TICK, CROSS, LOGO
+from library.search import lookup
 
 async def mark_embed(answer, correct_answer, user_score, rank):
     '''
@@ -47,6 +48,10 @@ class Who(ui.View):
         self.answer = [name for name, correct in options.items() if correct].pop()
         self.ephemeral = ephemeral
 
+    async def interaction_check(self, interaction):
+        '''Determine and return if the interaction should be responded to'''
+        return interaction.user == self.author
+
     async def on_timeout(self):
         '''Handle no response'''
         if self.children:
@@ -77,17 +82,55 @@ class WhoSelect(ui.Select):
     '''A representation of a multiple choice selection'''
     async def callback(self, interaction):
         '''Respond to the interaction as to whether the input answer is correct'''
-        if interaction.user == self.view.author:
+        self.view.clear_items()
+        await self.view.message.edit(view=self.view)
+
+        await interaction.response.send_message(
+            embed=await mark_embed(
+                self.values[0],
+                self.view.answer,
+                await score.record(
+                    interaction.user.id,
+                    correct=self.values[0] == self.view.answer
+                ),
+                await score.rank(interaction.user.id)
+            ),
+            ephemeral=self.view.ephemeral
+        )
+
+class WhoHard(Who):
+    '''A representation of a hard game'''
+    @ui.button(label='Answer', style=ButtonStyle.primary)
+    async def callback(self, _, interaction):
+        '''Respond to the interaction with a modal'''
+        await interaction.response.send_modal(WhoModal(self, self.answer))
+
+class WhoModal(ui.Modal):
+    '''A representation of an input modal'''
+    def __init__(self, view, answer):
+        '''Initialize the input modal with the view and the answer'''
+        super().__init__(title='What is the name of this card?')
+        self.view = view
+        self.answer = answer
+        self.add_item(ui.InputText(label='Answer'))
+
+    async def callback(self, interaction):
+        '''Respond to the interaction as to whether the input answer is correct'''
+        if self.view.is_finished():
+            await interaction.response.defer()
+        else:
             self.view.clear_items()
             await self.view.message.edit(view=self.view)
+            answer = (await lookup(self.children[0].value, 'CG', results=1)).pop().name
 
             await interaction.response.send_message(
                 embed=await mark_embed(
-                    self.values[0],
-                    self.view.answer,
+                    answer,
+                    self.answer,
                     await score.record(
                         interaction.user.id,
-                        correct=self.values[0] == self.view.answer
+                        correct=answer == self.answer,
+                        difficulty='Hard'
                     ),
                     await score.rank(interaction.user.id)
                 ),

@@ -12,7 +12,7 @@ from cogs.status import Status
 from library import cards, score, helper
 from library.pagination import Paginator
 from library.search import lookup, cardpool, getoptions
-from library.ui import WhoEasy
+from library.ui import WhoEasy, WhoHard
 
 signal(SIGINT, lambda signalnumber, stackframe: sys.exit())
 basicConfig()
@@ -227,14 +227,23 @@ async def rulings_error(ctx, error):
 @bot.slash_command()
 async def who(
     ctx,
+    difficulty : discord.Option(
+        str,
+        'Difficulty:',
+        choices=['Easy', 'Hard'],
+        default='Easy'
+    ),
     mention : helper.mentionoption,
     public : helper.publicoption
 ):
     '''Get a trivia question'''
     if options := await getoptions():
+        args = (ctx.author, options, not public)
+        kwargs = {'timeout' : 30}
+
         await ctx.respond(
             embed=[embed for embed in options.values() if embed].pop(),
-            view=WhoEasy(ctx.author, options, not public, timeout=20),
+            view=WhoEasy(*args, **kwargs) if difficulty == 'Easy' else WhoHard(*args, **kwargs),
             ephemeral=not public
         )
         await helper.ping(ctx, mention, not public)
