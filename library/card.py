@@ -396,7 +396,7 @@ class Card: # pylint: disable=too-many-instance-attributes
                 for cset in sorted({cset.name for cset in self.sets})
             ]
 
-    async def make_who_embed(self, seconds=20):
+    async def make_who_embed(self, seconds=30):
         '''Make and return a question embed, giving X seconds to answer'''
         timestamp = format_dt(datetime.now() + timedelta(seconds=seconds), style='T')
 
