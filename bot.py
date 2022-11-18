@@ -1,4 +1,5 @@
 '''Entry point'''
+from asyncio import sleep
 from getpass import getpass
 from logging import basicConfig
 from random import choice
@@ -32,6 +33,19 @@ async def updatecards():
     await cards.generatecards()
 
 updatecards.start()
+
+@tasks.loop(hours=1)
+async def update_status():
+    '''Update status'''
+    await bot.wait_until_ready()
+
+    await bot.change_presence(activity=discord.Game('by Dot and friends'))
+    await sleep(60)
+    await bot.change_presence(
+        activity=discord.Activity(type=discord.ActivityType.listening, name='/')
+    )
+
+update_status.start()
 
 # commands
 @bot.slash_command(checks=[helper.check_view_read])
