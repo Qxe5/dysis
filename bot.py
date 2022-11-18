@@ -50,14 +50,6 @@ async def search(
     else:
         await helper.noresult(ctx, card)
 
-@search.error
-async def search_error(ctx, error):
-    '''Handle a lack of channel permissions'''
-    if isinstance(error, discord.CheckFailure):
-        await helper.no_view_read(ctx)
-    else:
-        raise error
-
 @bot.slash_command(checks=[helper.check_view_read])
 async def arts(
     ctx,
@@ -75,14 +67,6 @@ async def arts(
         await helper.ping(ctx, mention, not public)
     else:
         await helper.noresult(ctx, card)
-
-@arts.error
-async def arts_error(ctx, error):
-    '''Handle a lack of channel permissions'''
-    if isinstance(error, discord.CheckFailure):
-        await helper.no_view_read(ctx)
-    else:
-        raise error
 
 randomgroup = bot.create_group(name='random')
 
@@ -102,14 +86,6 @@ async def randomcard(
         public=public
     )
 
-@randomcard.error
-async def randomcard_error(ctx, error):
-    '''Handle a lack of channel permissions'''
-    if isinstance(error, discord.CheckFailure):
-        await helper.no_view_read(ctx)
-    else:
-        raise error
-
 @randomgroup.command(checks=[helper.check_view_read])
 async def art(
     ctx,
@@ -126,7 +102,6 @@ async def art(
         public=public
     )
 
-@art.error
 async def art_error(ctx, error):
     '''Handle a lack of channel permissions'''
     if isinstance(error, discord.CheckFailure):
@@ -155,14 +130,6 @@ async def sets(
     else:
         await helper.noresult(ctx, card)
 
-@sets.error
-async def sets_error(ctx, error):
-    '''Handle a lack of channel permissions'''
-    if isinstance(error, discord.CheckFailure):
-        await helper.no_view_read(ctx)
-    else:
-        raise error
-
 @bot.slash_command(checks=[helper.check_view_read])
 async def setimages(
     ctx,
@@ -183,14 +150,6 @@ async def setimages(
             await helper.noattribute(ctx, result.name, 'set images', not public)
     else:
         await helper.noresult(ctx, card)
-
-@setimages.error
-async def setimages_error(ctx, error):
-    '''Handle a lack of channel permissions'''
-    if isinstance(error, discord.CheckFailure):
-        await helper.no_view_read(ctx)
-    else:
-        raise error
 
 @bot.slash_command(checks=[helper.check_view_read])
 async def rulings( # pylint: disable=too-many-arguments
@@ -215,14 +174,6 @@ async def rulings( # pylint: disable=too-many-arguments
             await helper.noattribute(ctx, result.name, 'rulings', not public)
     else:
         await helper.noresult(ctx, card)
-
-@rulings.error
-async def rulings_error(ctx, error):
-    '''Handle a lack of channel permissions'''
-    if isinstance(error, discord.CheckFailure):
-        await helper.no_view_read(ctx)
-    else:
-        raise error
 
 @bot.slash_command()
 async def who(
@@ -276,6 +227,20 @@ async def servers(ctx):
         f'{len(bot.guilds)} Servers ({sum(guild.member_count for guild in bot.guilds)} Members)',
         ephemeral=True
     )
+
+@search.error
+@arts.error
+@sets.error
+@setimages.error
+@rulings.error
+@randomcard.error
+@art.error
+async def channel_error(ctx, error):
+    '''Handle a lack of channel permissions'''
+    if isinstance(error, discord.CheckFailure):
+        await helper.no_view_read(ctx)
+    else:
+        raise error
 
 # cogs
 bot.add_cog(Status(bot))
