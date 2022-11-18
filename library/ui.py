@@ -49,8 +49,16 @@ class Who(ui.View):
         self.ephemeral = ephemeral
 
     async def interaction_check(self, interaction):
-        '''Determine and return if the interaction should be responded to'''
+        '''Determine and return if the interaction should be responded to without error'''
         return interaction.user == self.author
+
+    async def on_check_failure(self, interaction):
+        '''Respond to unknown authors'''
+        await interaction.response.send_message(
+            f'Only {self.author} can interact with this item. Please run the command yourself.',
+            ephemeral=True,
+            delete_after=10
+        )
 
     async def on_timeout(self):
         '''Handle no response'''
