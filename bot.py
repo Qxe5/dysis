@@ -9,7 +9,6 @@ import sys
 import discord
 from discord.ext import tasks
 
-from cogs.status import Status
 from library import cards, score, helper
 from library.pagination import Paginator
 from library.search import lookup, cardpool, getoptions
@@ -255,9 +254,6 @@ async def channel_error(ctx, error):
         await helper.no_view_read(ctx)
     else:
         raise error
-
-# cogs
-bot.add_cog(Status(bot))
 
 # authenticate
 try:
