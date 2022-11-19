@@ -23,7 +23,7 @@ async def cardpool(cardtype):
     '''Return the card pool given a card type'''
     return {
         'All'     : cards.keys(),
-        'CG'      : cards.keys() - skills,
+        'CG'      : cards.keys() - skills - tokens,
         'Monster' : monsters,
         'Spell'   : spells,
         'Trap'    : traps,
