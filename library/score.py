@@ -22,7 +22,7 @@ async def record(user, correct, difficulty='Easy'):
     and the difficulty they played on
     '''
     user = str(user)
-    increment = 1 if difficulty == 'Easy' else 20
+    increment = 1 if difficulty == 'Easy' else 10
 
     with shelve.open(PATH) as scores:
         if user not in scores:
