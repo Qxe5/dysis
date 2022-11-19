@@ -63,7 +63,7 @@ async def getoptions(number=4, retries=8):
 
         async with aiohttp.ClientSession(raise_for_status=True) as client:
             try:
-                await client.head(await correct.make_art())
+                await client.head(await correct.make_art(), timeout=5)
             except (
                 aiohttp.ClientConnectionError,
                 aiohttp.ClientResponseError,
