@@ -10,6 +10,7 @@ import discord
 from discord.ext import tasks
 
 from library import cards, score, helper
+from library.backup import send
 from library.pagination import Paginator
 from library.search import lookup, cardpool, getoptions
 from library.ui import WhoEasy, WhoHard
@@ -45,6 +46,13 @@ async def update_status():
     )
 
 update_status.start()
+
+@tasks.loop(hours=1)
+async def backup():
+    '''Backup the persistent state'''
+    await send(bot)
+
+backup.start()
 
 # commands
 @bot.slash_command(checks=[helper.check_view_read])
