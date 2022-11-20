@@ -18,6 +18,7 @@ from library import colours, icons
 from library.api import ART, YGOPRICES, YGORG
 from library.collection import cards, koids
 from library.elements import Levels, Stats, Limits, Releases, Prices, Set, Pendulum
+from library.image import get
 
 ygoprices = Template('https://yugiohprices.com/browse_sets?set=$set')
 
@@ -405,7 +406,7 @@ class Card: # pylint: disable=too-many-instance-attributes
             description=f'You have {seconds} seconds to answer ({timestamp})'
         )
         embed.set_author(icon_url=icons.QUESTION, name='What card is this?')
-        embed.set_image(url=await self.make_art())
+        embed.set_image(url=await get(min(self.ids)))
 
         return embed
 
