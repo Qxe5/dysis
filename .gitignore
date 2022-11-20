@@ -2,5 +2,4 @@
 .vscode/
 .devcontainer/
 __pycache__/
-.venv/
 cache/
