@@ -256,6 +256,7 @@ async def servers(ctx):
 @rulings.error
 @randomcard.error
 @art.error
+@leaderboard.error
 async def channel_error(ctx, error):
     '''Handle a lack of channel permissions'''
     if isinstance(error, discord.CheckFailure):
