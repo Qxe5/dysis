@@ -16,13 +16,9 @@ async def percent(wins, losses):
     '''Format a win lose ratio as a percent and return it'''
     return f'{await derive(wins, losses) * 100:.2f}%'
 
-async def record(user, correct, difficulty='Easy'):
-    '''
-    Update and return the users score based off whether they were correct
-    and the difficulty they played on
-    '''
+async def record(user, correct, increment=1):
+    '''Update and return the users score based off whether they were correct and the increment'''
     user = str(user)
-    increment = 1 if difficulty == 'Easy' else 10
 
     with shelve.open(PATH) as scores:
         if user not in scores:
