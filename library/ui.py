@@ -9,6 +9,9 @@ from library import score
 from library.icons import TICK, CROSS, GREEN_DOT, RED_DOT, LOGO
 from library.search import lookup
 
+EASYWINS = 1
+HARDWINS = 10
+
 @dataclass
 class AnswerSheet:
     '''A representation of an answer sheet used for marking and display'''
@@ -24,6 +27,9 @@ async def mark_embed(answersheet):
     correct = answersheet.answer == answersheet.correct_answer
     wins, losses = answersheet.user_score
     rank, players = answersheet.rank
+    trophy = (' 🏆' if correct
+                    and answersheet.increment in {wins * 2 for wins in (EASYWINS, HARDWINS)}
+                    else '')
 
     embed = Embed(
         colour=Colour.green() if correct else Colour.brand_red(),
@@ -41,8 +47,7 @@ async def mark_embed(answersheet):
 
     embed.add_field(
         name='Time',
-        value=f'{answersheet.timetaken:.2f}s'
-              f'{" 🏆" if correct and answersheet.timetaken < 10 else ""}',
+        value=f'{answersheet.timetaken:.2f}s{trophy}',
         inline=False
     )
 
@@ -119,7 +124,7 @@ class WhoSelect(ui.Select):
         await self.view.message.edit(view=self.view)
 
         timetaken = time() - self.view.time
-        increment = 1 if timetaken > 5 else 2
+        increment = EASYWINS if timetaken > 5 else EASYWINS * 2
 
         await interaction.response.send_message(
             embed=await mark_embed(
@@ -165,7 +170,7 @@ class WhoModal(ui.Modal):
 
             answer = (await lookup(self.children[0].value, 'CG', results=1)).pop().name
             timetaken = time() - self.view.time
-            increment = 10 if timetaken > 15 else 20
+            increment = HARDWINS if timetaken > 15 else HARDWINS * 2
 
             await interaction.response.send_message(
                 embed=await mark_embed(
