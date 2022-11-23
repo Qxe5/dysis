@@ -155,7 +155,7 @@ class WhoModal(ui.Modal):
     '''A representation of an input modal'''
     def __init__(self, view, answer):
         '''Initialize the input modal with the view and the answer'''
-        super().__init__(title='What is the name of this card?')
+        super().__init__(title='What is the full name of this card?')
         self.view = view
         self.answer = answer
         self.add_item(ui.InputText(label='Answer'))
