@@ -97,7 +97,7 @@ class Who(ui.View):
                                 self.answer,
                                 user_score,
                                 await score.rank(self.author.id),
-                                time() - self.time
+                                timetaken=30
                             )
                         )
                     ],
@@ -119,7 +119,7 @@ class WhoSelect(ui.Select):
         await self.view.message.edit(view=self.view)
 
         timetaken = time() - self.view.time
-        increment = 1 if timetaken > 10 else 2
+        increment = 1 if timetaken > 5 else 2
 
         await interaction.response.send_message(
             embed=await mark_embed(
@@ -165,7 +165,7 @@ class WhoModal(ui.Modal):
 
             answer = (await lookup(self.children[0].value, 'CG', results=1)).pop().name
             timetaken = time() - self.view.time
-            increment = 10 if timetaken > 10 else 20
+            increment = 10 if timetaken > 15 else 20
 
             await interaction.response.send_message(
                 embed=await mark_embed(
