@@ -239,6 +239,10 @@ class Card: # pylint: disable=too-many-instance-attributes
 
         return Limits(limits[0], limits[1])
 
+    async def getid(self):
+        '''Get and return the main ID'''
+        return min(self.ids)
+
     async def formatlimits(self):
         '''Format and return the limits as a string'''
         with StringIO() as limits:
@@ -305,7 +309,7 @@ class Card: # pylint: disable=too-many-instance-attributes
 
     async def make_art(self):
         '''Make and return the URL of the main artwork image'''
-        return ART.substitute(cid=min(self.ids))
+        return ART.substitute(cid=await self.getid())
 
     async def make_embed(self):
         '''Make and return the embed'''
@@ -406,7 +410,7 @@ class Card: # pylint: disable=too-many-instance-attributes
             description=f'You have {seconds} seconds to answer ({timestamp})'
         )
         embed.set_author(icon_url=icons.QUESTION, name='What card is this?')
-        embed.set_image(url=await get(min(self.ids)))
+        embed.set_image(url=await get(await self.getid()))
 
         return embed
 
