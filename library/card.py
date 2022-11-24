@@ -243,6 +243,10 @@ class Card: # pylint: disable=too-many-instance-attributes
         '''Get and return the main ID'''
         return min(self.ids)
 
+    async def art(self):
+        '''Construct and return the URL of the main artwork image'''
+        return ART.substitute(cid=await self.getid())
+
     async def formatlimits(self):
         '''Format and return the limits as a string'''
         with StringIO() as limits:
@@ -307,15 +311,11 @@ class Card: # pylint: disable=too-many-instance-attributes
 
             return title.getvalue().rstrip('\n')
 
-    async def make_art(self):
-        '''Make and return the URL of the main artwork image'''
-        return ART.substitute(cid=await self.getid())
-
     async def make_embed(self):
         '''Make and return the embed'''
         colour = colours.types[self.type]
         url = f'{YGORG}card#{self.koid}' if self.koid else Embed.Empty
-        image = await self.make_art()
+        image = await self.art()
         subicon = (icons.subtypes[self.subtype] if self.subtype in icons.subtypes
                                                                 else icons.SKILLCHARACTER)
 
