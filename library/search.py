@@ -7,6 +7,7 @@ from string import punctuation
 import aiohttp
 
 from library.collection import cards, monsters, spells, traps, tokens, skills
+from library.image import cache
 
 DEFAULT_RESULTS = 25
 
@@ -63,7 +64,7 @@ async def getoptions(number=4, retries=8):
 
         async with aiohttp.ClientSession(raise_for_status=True) as client:
             try:
-                await client.head(await correct.make_art(), timeout=5)
+                await cache(client, correct)
             except (
                 aiohttp.ClientConnectionError,
                 aiohttp.ClientResponseError,
