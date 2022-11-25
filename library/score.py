@@ -1,10 +1,11 @@
 '''Score management'''
 from math import ceil
+from random import choice
 import shelve
 
 from discord import Embed, Colour
 
-from library.icons import GOLD, SILVER, BRONZE, BACKGROUND, LOGO
+from library.icons import GOLD, SILVER, BRONZE, BACKGROUNDS, LOGO
 
 PATH = 'cache/scores'
 
@@ -74,7 +75,7 @@ async def leaderboard(bot, top=20):
         embed.add_field(name='Losses', value=losses)
         embed.add_field(name='Win Rate', value=await percent(wins, losses))
         embed.add_field(name='Score', value=score)
-        embed.set_image(url=user.banner if user.banner else BACKGROUND)
+        embed.set_image(url=user.banner if user.banner else choice(BACKGROUNDS))
         embed.set_footer(icon_url=LOGO, text=user)
 
         embeds.append(embed)
